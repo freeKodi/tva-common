@@ -289,6 +289,9 @@
 	<setting default="100" id="VeohResolver_priority" label="Priority" type="number"/>
 	<setting default="true" id="VeohResolver_enabled" label="Enabled" type="bool"/>
 	<setting label="This plugin calls the veoh addon - change settings there." type="lsep"/>
+	<setting label="vid.ag" type="lsep"/>
+	<setting default="100" id="VidAgResolver_priority" label="Priority" type="number"/>
+	<setting default="true" id="VidAgResolver_enabled" label="Enabled" type="bool"/>
 	<setting label="vidbull" type="lsep"/>
 	<setting default="100" id="VidbullResolver_priority" label="Priority" type="number"/>
 	<setting default="true" id="VidbullResolver_enabled" label="Enabled" type="bool"/>
@@ -317,12 +320,12 @@
 	<setting label="videoraj.ch" type="lsep"/>
 	<setting default="100" id="VideorajResolver_priority" label="Priority" type="number"/>
 	<setting default="true" id="VideorajResolver_enabled" label="Enabled" type="bool"/>
+</category>
+<category label="Resolvers 5">
 	<setting label="videotanker" type="lsep"/>
 	<setting default="100" id="VideoTankerResolver_priority" label="Priority" type="number"/>
 	<setting default="true" id="VideoTankerResolver_enabled" label="Enabled" type="bool"/>
 	<setting default="1" id="VideoTankerResolver_quality" label="Video Quality" type="enum" values="High|Medium|Low"/>
-</category>
-<category label="Resolvers 5">
 	<setting label="videott" type="lsep"/>
 	<setting default="100" id="VideoTTResolver_priority" label="Priority" type="number"/>
 	<setting default="true" id="VideoTTResolver_enabled" label="Enabled" type="bool"/>
@@ -348,7 +351,7 @@
 	<setting label="vidto" type="lsep"/>
 	<setting default="100" id="VidtoResolver_priority" label="Priority" type="number"/>
 	<setting default="true" id="VidtoResolver_enabled" label="Enabled" type="bool"/>
-	<setting label="vidup.org" type="lsep"/>
+	<setting label="vidup" type="lsep"/>
 	<setting default="100" id="VidUpResolver_priority" label="Priority" type="number"/>
 	<setting default="true" id="VidUpResolver_enabled" label="Enabled" type="bool"/>
 	<setting label="vidxden" type="lsep"/>
