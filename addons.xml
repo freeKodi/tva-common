@@ -26,7 +26,7 @@
     </extension>
     <extension point="xbmc.addon.metadata">
         <summary>Faster Updating of Common Libraries for Kodi</summary>
-        <description>This repository contains intermediate builds of libraries common used by TVAddons Kodi addons, Brought to you by TVADDONS.ag</description>
+        <description>This repository contains intermediate builds of libraries commonly used by TVAddons Kodi addons, Brought to you by TVADDONS.ag</description>
         <platform>all</platform>
     </extension>
 </addon>
