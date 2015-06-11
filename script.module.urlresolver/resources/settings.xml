@@ -72,18 +72,21 @@
 	<setting default="100" id="FacebookResolver_priority" label="Priority" type="number"/>
 	<setting default="true" id="FacebookResolver_enabled" label="Enabled" type="bool"/>
 	<setting default="0" id="FacebookResolver_quality" label="Video Quality" type="enum" values="High|Standard"/>
+	<setting label="filehoot" type="lsep"/>
+	<setting default="100" id="FilehootResolver_priority" label="Priority" type="number"/>
+	<setting default="true" id="FilehootResolver_enabled" label="Enabled" type="bool"/>
 	<setting label="filenuke" type="lsep"/>
 	<setting default="100" id="FilenukeResolver_priority" label="Priority" type="number"/>
 	<setting default="true" id="FilenukeResolver_enabled" label="Enabled" type="bool"/>
 	<setting label="filepup" type="lsep"/>
 	<setting default="100" id="FilePupResolver_priority" label="Priority" type="number"/>
 	<setting default="true" id="FilePupResolver_enabled" label="Enabled" type="bool"/>
+</category>
+<category label="Resolvers 2">
 	<setting label="flashx" type="lsep"/>
 	<setting default="100" id="FlashxResolver_priority" label="Priority" type="number"/>
 	<setting default="true" id="FlashxResolver_enabled" label="Enabled" type="bool"/>
 	<setting default="false" id="FlashxResolver_auto_pick" label="Automatically pick best quality" type="bool" visible="true"/>
-</category>
-<category label="Resolvers 2">
 	<setting label="googlevideo" type="lsep"/>
 	<setting default="100" id="GoogleResolver_priority" label="Priority" type="number"/>
 	<setting default="true" id="GoogleResolver_enabled" label="Enabled" type="bool"/>
@@ -157,11 +160,11 @@
 	<setting label="novamov" type="lsep"/>
 	<setting default="100" id="NovamovResolver_priority" label="Priority" type="number"/>
 	<setting default="true" id="NovamovResolver_enabled" label="Enabled" type="bool"/>
+</category>
+<category label="Resolvers 3">
 	<setting label="nowvideo" type="lsep"/>
 	<setting default="100" id="NowvideoResolver_priority" label="Priority" type="number"/>
 	<setting default="true" id="NowvideoResolver_enabled" label="Enabled" type="bool"/>
-</category>
-<category label="Resolvers 3">
 	<setting label="play44.net" type="lsep"/>
 	<setting default="100" id="Play44Resolver_priority" label="Priority" type="number"/>
 	<setting default="true" id="Play44Resolver_enabled" label="Enabled" type="bool"/>
@@ -336,6 +339,9 @@
 	<setting label="videoweed.es" type="lsep"/>
 	<setting default="100" id="VideoweedResolver_priority" label="Priority" type="number"/>
 	<setting default="true" id="VideoweedResolver_enabled" label="Enabled" type="bool"/>
+	<setting label="videowood" type="lsep"/>
+	<setting default="100" id="VideowoodResolver_priority" label="Priority" type="number"/>
+	<setting default="true" id="VideowoodResolver_enabled" label="Enabled" type="bool"/>
 	<setting label="videozed" type="lsep"/>
 	<setting default="100" id="VideozedResolver_priority" label="Priority" type="number"/>
 	<setting default="true" id="VideozedResolver_enabled" label="Enabled" type="bool"/>
@@ -395,6 +401,8 @@
 	<setting label="youtube" type="lsep"/>
 	<setting default="100" id="YoutubeResolver_priority" label="Priority" type="number"/>
 	<setting default="true" id="YoutubeResolver_enabled" label="Enabled" type="bool"/>
+</category>
+<category label="Resolvers 6">
 	<setting label="This plugin calls the youtube addon - change settings there." type="lsep"/>
 	<setting label="youwatch" type="lsep"/>
 	<setting default="100" id="YouWatchResolver_priority" label="Priority" type="number"/>
@@ -402,8 +410,6 @@
 	<setting default="false" id="YouWatchResolver_login" label="Login" type="bool"/>
 	<setting default="" enable="eq(-1,true)" id="YouWatchResolver_username" label="     username" type="text"/>
 	<setting default="" enable="eq(-2,true)" id="YouWatchResolver_password" label="     password" option="hidden" type="text"/>
-</category>
-<category label="Resolvers 6">
 	<setting label="zalaa" type="lsep"/>
 	<setting default="100" id="ZalaaResolver_priority" label="Priority" type="number"/>
 	<setting default="true" id="ZalaaResolver_enabled" label="Enabled" type="bool"/>
