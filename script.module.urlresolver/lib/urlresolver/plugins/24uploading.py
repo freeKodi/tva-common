@@ -1,6 +1,6 @@
-'''
-sharesix urlresolver plugin
-Copyright (C) 2014 tknorris
+"""
+grifthost urlresolver plugin
+Copyright (C) 2015 tknorris
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -14,59 +14,59 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
-'''
+"""
 
 from t0mm0.common.net import Net
 from urlresolver.plugnplay.interfaces import UrlResolver
 from urlresolver.plugnplay.interfaces import PluginSettings
 from urlresolver.plugnplay import Plugin
-import re
-import urllib2
 from urlresolver import common
+from lib import captcha_lib
+import re
 
-class FilenukeResolver(Plugin, UrlResolver, PluginSettings):
+MAX_TRIES = 3
+
+class TwentyFourUploadingResolver(Plugin, UrlResolver, PluginSettings):
     implements = [UrlResolver, PluginSettings]
-    name = "filenuke"
-    domains = ["filenuke.com"]
+    name = "24uploading"
+    domains = ["24uploading.com"]
 
     def __init__(self):
         p = self.get_setting('priority') or 100
         self.priority = int(p)
         self.net = Net()
+        self.pattern = '//((?:www.)?24uploading\.com)/([0-9a-zA-Z/]+)'
 
     def get_media_url(self, host, media_id):
         web_url = self.get_url(host, media_id)
-        headers = {
-                   'User-Agent': common.IE_USER_AGENT
-        }
+        html = self.net.http_GET(web_url).content
+        
+        tries = 0
+        while tries < MAX_TRIES:
+            data = {}
+            for match in re.finditer('input type="hidden" name="([^"]+)" value="([^"]+)', html):
+                key, value = match.groups()
+                data[key] = value
+            data['method_free'] = 'Free Download'
+            data.update(captcha_lib.do_captcha(html))
+            
+            html = self.net.http_POST(web_url, form_data=data).content
+            match = re.search('class="btn_down.*?href="([^"]+)', html, re.DOTALL)
+            if match:
+                return match.group(1)
+            tries += 1
 
-        html = self.net.http_GET(web_url, headers=headers).content
-        r = re.search('<a[^>]*id="go-next"[^>*]href="([^"]+)', html)
-        if r:
-            next_url = 'http://' + host + r.group(1)
-            print next_url
-            html = self.net.http_GET(next_url, headers=headers).content
-        
-        if 'file you were looking for could not be found' in html:
-            raise UrlResolver.ResolverError('File Not Found or removed')
-        
-        r = re.search("var\s+lnk\d+\s*=\s*'(.*?)'", html)
-        if r:
-            stream_url = r.group(1) + '|User-Agent=%s' % (common.IE_USER_AGENT)
-            return stream_url
-        else:
-            raise UrlResolver.ResolverError('Unable to locate link')
+        raise UrlResolver.ResolverError('Unable to resolve 24uploading link. Filelink not found.')
 
     def get_url(self, host, media_id):
-        return 'http://%s/%s' % (host, media_id)
-        
+            return 'http://24uploading.com/%s' % (media_id)
+
     def get_host_and_id(self, url):
-        r = re.search('//(.+?)/([0-9a-zA-Z/]+)', url)
+        r = re.search(self.pattern, url)
         if r:
             return r.groups()
         else:
             return False
 
     def valid_url(self, url, host):
-        if self.get_setting('enabled') == 'false': return False
-        return re.match('http://((?:www.)?filenuke.com)/(?:f/)?([0-9A-Za-z]+)', url) or 'filenuke' in host
+        return re.search(self.pattern, url) or self.name  in host
