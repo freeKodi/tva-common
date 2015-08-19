@@ -263,6 +263,10 @@
 	<setting label="stagevu" type="lsep"/>
 	<setting default="100" id="StagevuResolver_priority" label="Priority" type="number"/>
 	<setting default="true" id="StagevuResolver_enabled" label="Enabled" type="bool"/>
+	<setting label="stream2k.tv" type="lsep"/>
+	<setting default="100" id="Stream2kResolver_priority" label="Priority" type="number"/>
+	<setting default="true" id="Stream2kResolver_enabled" label="Enabled" type="bool"/>
+	<setting default="false" id="Stream2kResolver_auto_pick" label="Automatically pick best quality" type="bool" visible="true"/>
 	<setting label="streamcloud" type="lsep"/>
 	<setting default="100" id="StreamcloudResolver_priority" label="Priority" type="number"/>
 	<setting default="true" id="StreamcloudResolver_enabled" label="Enabled" type="bool"/>
@@ -313,11 +317,11 @@
 	<setting label="vidcrazy.net" type="lsep"/>
 	<setting default="100" id="VidCrazyResolver_priority" label="Priority" type="number"/>
 	<setting default="true" id="VidCrazyResolver_enabled" label="Enabled" type="bool"/>
+</category>
+<category label="Resolvers 5">
 	<setting label="video44.net" type="lsep"/>
 	<setting default="100" id="Video44Resolver_priority" label="Priority" type="number"/>
 	<setting default="true" id="Video44Resolver_enabled" label="Enabled" type="bool"/>
-</category>
-<category label="Resolvers 5">
 	<setting label="videobb" type="lsep"/>
 	<setting default="100" id="VideobbResolver_priority" label="Priority" type="number"/>
 	<setting default="true" id="VideobbResolver_enabled" label="Enabled" type="bool"/>
@@ -391,12 +395,16 @@
 	<setting label="vivosx" type="lsep"/>
 	<setting default="100" id="VivosxResolver_priority" label="Priority" type="number"/>
 	<setting default="true" id="VivosxResolver_enabled" label="Enabled" type="bool"/>
+</category>
+<category label="Resolvers 6">
 	<setting label="VK.com" type="lsep"/>
 	<setting default="100" id="VKResolver_priority" label="Priority" type="number"/>
 	<setting default="true" id="VKResolver_enabled" label="Enabled" type="bool"/>
 	<setting default="false" id="VKResolver_auto_pick" label="Automatically pick best quality" type="bool" visible="true"/>
-</category>
-<category label="Resolvers 6">
+	<setting label="VKPass.com" type="lsep"/>
+	<setting default="100" id="VKPassResolver_priority" label="Priority" type="number"/>
+	<setting default="true" id="VKPassResolver_enabled" label="Enabled" type="bool"/>
+	<setting default="false" id="VKPassResolver_auto_pick" label="Automatically pick best quality" type="bool" visible="true"/>
 	<setting label="vodlocker.com" type="lsep"/>
 	<setting default="100" id="VodlockerResolver_priority" label="Priority" type="number"/>
 	<setting default="true" id="VodlockerResolver_enabled" label="Enabled" type="bool"/>
