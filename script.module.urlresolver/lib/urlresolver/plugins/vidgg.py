@@ -1,6 +1,6 @@
 """
-openload.io urlresolver plugin
-Copyright (C) 2015 tknorris
+vid.gg urlresolver plugin
+Copyright (C) 2015 steev
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -22,42 +22,45 @@ from urlresolver.plugnplay.interfaces import PluginSettings
 from urlresolver.plugnplay import Plugin
 from urlresolver import common
 import re
+import urllib
 
-class OpenLoadResolver(Plugin, UrlResolver, PluginSettings):
+class VidggResolver(Plugin, UrlResolver, PluginSettings):
     implements = [UrlResolver, PluginSettings]
-    name = "openload"
-    domains = ["openload.io", "openload.co"]
+    name = "vid.gg"
+    domains = ["www.vid.gg", "vidgg.to"]
+    pattern = 'http://((?:www\.)?vid(?:\.gg|gg\.to))/(?:embed/\?id=|video/)([0-9a-z]+)'
 
     def __init__(self):
         p = self.get_setting('priority') or 100
         self.priority = int(p)
         self.net = Net()
-        self.pattern = '//((?:www.)?openload\.(?:io|co))/(?:embed|f)/([0-9a-zA-Z-_]+)'
 
     def get_media_url(self, host, media_id):
         web_url = self.get_url(host, media_id)
+
         html = self.net.http_GET(web_url).content
-        if 'We are sorry!' in html:
-            raise UrlResolver.ResolverError('File Not Found or Removed.')
-        
-        stream_url = ''
-        match = re.search('attr\s*\(\s*"src"\s*,\s*"([^"]+)', html)
-        if match:
-            stream_url = match.group(1)
+        r = re.search('flashvars\.filekey="(.+?)"', html)
+        if r:
+            filekey = r.group(1)
         else:
-            match = re.search('<source[^>]+src="([^"]+)', html)
-            if match:
-                stream_url = match.group(1)
-            
-        if stream_url:
-            stream_url = stream_url.replace('\\/', '/')
-            return stream_url + '|User-Agent=%s' % (common.IE_USER_AGENT)
+            raise UrlResolver.ResolverError("File Not Found or removed")
+
+        api_call = "http://www.vidgg.to/api/player.api.php?{0}&file={1}&key={2}".format(
+            "numOfErrors=0&cid=1&cid2=undefined&pass=undefined&user=undefined",
+            media_id,
+            urllib.quote_plus(filekey).replace(".", "%2E")
+        )
+
+        api_html = self.net.http_GET(api_call).content
+        rapi = re.search("url=(.+?)&title=", api_html)
+        if rapi:
+            return rapi.group(1)
         
-        raise UrlResolver.ResolverError('Unable to resolve openload.io link. Filelink not found.')
+        raise UrlResolver.ResolverError("File Not Found or removed")
 
     def get_url(self, host, media_id):
-            return 'http://openload.io/embed/%s' % (media_id)
-
+        return 'http://www.vidgg.to/video/%s' % media_id
+    
     def get_host_and_id(self, url):
         r = re.search(self.pattern, url)
         if r:
@@ -66,4 +69,4 @@ class OpenLoadResolver(Plugin, UrlResolver, PluginSettings):
             return False
 
     def valid_url(self, url, host):
-        return re.search(self.pattern, url) or self.name  in host
+        return re.search(self.pattern, url) or 'vid.gg' in host

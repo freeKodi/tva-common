@@ -292,6 +292,9 @@
 	<setting label="tusfiles" type="lsep"/>
 	<setting default="100" id="TusfilesResolver_priority" label="Priority" type="number"/>
 	<setting default="true" id="TusfilesResolver_enabled" label="Enabled" type="bool"/>
+	<setting label="up2stream" type="lsep"/>
+	<setting default="100" id="Up2StreamResolver_priority" label="Priority" type="number"/>
+	<setting default="true" id="Up2StreamResolver_enabled" label="Enabled" type="bool"/>
 	<setting label="uploadc" type="lsep"/>
 	<setting default="100" id="UploadcResolver_priority" label="Priority" type="number"/>
 	<setting default="true" id="UploadcResolver_enabled" label="Enabled" type="bool"/>
@@ -311,14 +314,17 @@
 	<setting label="vid.ag" type="lsep"/>
 	<setting default="100" id="VidAgResolver_priority" label="Priority" type="number"/>
 	<setting default="true" id="VidAgResolver_enabled" label="Enabled" type="bool"/>
+	<setting label="vid.gg" type="lsep"/>
+	<setting default="100" id="VidggResolver_priority" label="Priority" type="number"/>
+	<setting default="true" id="VidggResolver_enabled" label="Enabled" type="bool"/>
+</category>
+<category label="Resolvers 5">
 	<setting label="vidbull" type="lsep"/>
 	<setting default="100" id="VidbullResolver_priority" label="Priority" type="number"/>
 	<setting default="true" id="VidbullResolver_enabled" label="Enabled" type="bool"/>
 	<setting label="vidcrazy.net" type="lsep"/>
 	<setting default="100" id="VidCrazyResolver_priority" label="Priority" type="number"/>
 	<setting default="true" id="VidCrazyResolver_enabled" label="Enabled" type="bool"/>
-</category>
-<category label="Resolvers 5">
 	<setting label="video44.net" type="lsep"/>
 	<setting default="100" id="Video44Resolver_priority" label="Priority" type="number"/>
 	<setting default="true" id="Video44Resolver_enabled" label="Enabled" type="bool"/>
@@ -391,12 +397,12 @@
 	<setting label="vimeo" type="lsep"/>
 	<setting default="100" id="VimeoResolver_priority" label="Priority" type="number"/>
 	<setting default="true" id="VimeoResolver_enabled" label="Enabled" type="bool"/>
+</category>
+<category label="Resolvers 6">
 	<setting label="This plugin calls the vimeo addon - change settings there." type="lsep"/>
 	<setting label="vivosx" type="lsep"/>
 	<setting default="100" id="VivosxResolver_priority" label="Priority" type="number"/>
 	<setting default="true" id="VivosxResolver_enabled" label="Enabled" type="bool"/>
-</category>
-<category label="Resolvers 6">
 	<setting label="VK.com" type="lsep"/>
 	<setting default="100" id="VKResolver_priority" label="Priority" type="number"/>
 	<setting default="true" id="VKResolver_enabled" label="Enabled" type="bool"/>
@@ -433,9 +439,6 @@
 	<setting label="youwatch" type="lsep"/>
 	<setting default="100" id="YouWatchResolver_priority" label="Priority" type="number"/>
 	<setting default="true" id="YouWatchResolver_enabled" label="Enabled" type="bool"/>
-	<setting default="false" id="YouWatchResolver_login" label="Login" type="bool"/>
-	<setting default="" enable="eq(-1,true)" id="YouWatchResolver_username" label="     username" type="text"/>
-	<setting default="" enable="eq(-2,true)" id="YouWatchResolver_password" label="     password" option="hidden" type="text"/>
 	<setting label="zalaa" type="lsep"/>
 	<setting default="100" id="ZalaaResolver_priority" label="Priority" type="number"/>
 	<setting default="true" id="ZalaaResolver_enabled" label="Enabled" type="bool"/>
