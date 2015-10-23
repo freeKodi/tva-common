@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 """
-    Copyright (C) 2014  smokdpi
+    Copyright (C) 2015  tknorris
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,27 +22,24 @@ from urlresolver.plugnplay.interfaces import UrlResolver
 from urlresolver.plugnplay.interfaces import PluginSettings
 from urlresolver.plugnplay import Plugin
 from urlresolver import common
-from lib import jsunpack
-import urllib
 import re
+from lib import jsunpack
 
-
-class UsersCloudResolver(Plugin, UrlResolver, PluginSettings):
-    implements = [UrlResolver, PluginSettings]
-    name = "userscloud"
-    domains = ["userscloud.com"]
+class UsersFilesResolver(Plugin, UrlResolver, PluginSettings):
+    implements = [UrlResolver]
+    name = "UsersFiles"
+    domains = ["usersfiles.com"]
 
     def __init__(self):
         p = self.get_setting('priority') or 100
         self.priority = int(p)
         self.net = Net()
-        self.pattern = 'https://(userscloud\.com)/(?:embed-)*([a-zA-Z0-9]+)[/|-|$]*'
-        self.user_agent = common.IE_USER_AGENT
-        self.net.set_user_agent(self.user_agent)
-        self.headers = {'User-Agent': self.user_agent}
+        self.pattern = 'http[s]*://((?:www\.)?usersfiles.com)/(.*)'
+        self.net.set_user_agent(common.IE_USER_AGENT)
+        self.headers = {'User-Agent': common.IE_USER_AGENT}
 
     def get_url(self, host, media_id):
-        return 'https://%s/%s' % (host, media_id)
+        return 'http://usersfiles.com/%s' % media_id
 
     def get_host_and_id(self, url):
         r = re.search(self.pattern, url)
@@ -55,16 +52,13 @@ class UsersCloudResolver(Plugin, UrlResolver, PluginSettings):
 
     def get_media_url(self, host, media_id):
         web_url = self.get_url(host, media_id)
-        stream_url = None
-        self.headers['Referer'] = web_url
-        html = self.net.http_GET(web_url, headers=self.headers).content
-        r = re.search('>(eval\(function\(p,a,c,k,e,d\).+?)</script>', html, re.DOTALL)
-        if r:
-            r = jsunpack.unpack(r.group(1))
-            r = re.search('param\sname\s*=\s*[\'"]src[\'"]\s*value\s*=\s*[\'"](.+?)[\'"]', r)
-            if r:
-                stream_url = r.group(1)
-        if stream_url:
-            return stream_url
-        else:
-            raise UrlResolver.ResolverError('File not found')
+        html = self.net.http_GET(web_url).content
+        match = re.search('<script[^>]*>(eval.*?)</script>', html, re.DOTALL)
+        if match:
+            js_data = jsunpack.unpack(match.group(1))
+            print js_data
+            match = re.search('<param\s+name="src"\s*value="([^"]+)', js_data)
+            if match:
+                return match.group(1)
+        
+        raise UrlResolver.ResolverError('Unable to find userfiles video')
