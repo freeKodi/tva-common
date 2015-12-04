@@ -20,9 +20,9 @@
 	<setting label="Real-Debrid" type="lsep"/>
 	<setting default="100" id="RealDebridResolver_priority" label="Priority" type="number"/>
 	<setting default="true" id="RealDebridResolver_enabled" label="Enabled" type="bool"/>
+	<setting default="false" id="RealDebridResolver_authorize" label="I have a Real Debrid Account" type="bool"/>
+	<setting label="***RD Authorization will be performed when you select the first RD link***" type="lsep"/>
 	<setting default="false" id="RealDebridResolver_autopick" label="Choose Primary Link Automatically" type="bool"/>
-	<setting default="false" id="RealDebridResolver_authorize" label="Ask for Authorization When Needed" type="bool"/>
-	<setting label="***Real-Debrid Authorization is performed on first use***" type="lsep"/>
 	<setting default="" id="RealDebridResolver_token" type="text" visible="false"/>
 	<setting default="" id="RealDebridResolver_refresh" type="text" visible="false"/>
 	<setting default="" id="RealDebridResolver_client_id" type="text" visible="false"/>
