@@ -300,6 +300,9 @@
 	<setting label="uploadcrazy.net" type="lsep"/>
 	<setting default="100" id="UploadCrazyResolver_priority" label="Priority" type="number"/>
 	<setting default="true" id="UploadCrazyResolver_enabled" label="Enabled" type="bool"/>
+	<setting label="uploadx" type="lsep"/>
+	<setting default="100" id="UploadXResolver_priority" label="Priority" type="number"/>
+	<setting default="true" id="UploadXResolver_enabled" label="Enabled" type="bool"/>
 	<setting label="uptobox" type="lsep"/>
 	<setting default="100" id="UpToBoxResolver_priority" label="Priority" type="number"/>
 	<setting default="true" id="UpToBoxResolver_enabled" label="Enabled" type="bool"/>
@@ -345,11 +348,11 @@
 	<setting label="videofun.me" type="lsep"/>
 	<setting default="100" id="VideoFunResolver_priority" label="Priority" type="number"/>
 	<setting default="true" id="VideoFunResolver_enabled" label="Enabled" type="bool"/>
+</category>
+<category label="Resolvers 5">
 	<setting label="videohut.to" type="lsep"/>
 	<setting default="100" id="VideoHutResolver_priority" label="Priority" type="number"/>
 	<setting default="true" id="VideoHutResolver_enabled" label="Enabled" type="bool"/>
-</category>
-<category label="Resolvers 5">
 	<setting label="videomega" type="lsep"/>
 	<setting default="100" id="VideoMegaResolver_priority" label="Priority" type="number"/>
 	<setting default="true" id="VideoMegaResolver_enabled" label="Enabled" type="bool"/>
@@ -424,11 +427,11 @@
 	<setting label="vshare" type="lsep"/>
 	<setting default="100" id="VshareResolver_priority" label="Priority" type="number"/>
 	<setting default="true" id="VshareResolver_enabled" label="Enabled" type="bool"/>
+</category>
+<category label="Resolvers 6">
 	<setting label="vshare.eu" type="lsep"/>
 	<setting default="100" id="VshareEuResolver_priority" label="Priority" type="number"/>
 	<setting default="true" id="VshareEuResolver_enabled" label="Enabled" type="bool"/>
-</category>
-<category label="Resolvers 6">
 	<setting label="watchfreeinhd" type="lsep"/>
 	<setting default="100" id="WatchFreeResolver_priority" label="Priority" type="number"/>
 	<setting default="true" id="WatchFreeResolver_enabled" label="Enabled" type="bool"/>
