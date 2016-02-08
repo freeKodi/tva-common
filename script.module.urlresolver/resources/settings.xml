@@ -272,7 +272,6 @@
 	<setting label="veoh" type="lsep"/>
 	<setting default="100" id="VeohResolver_priority" label="Priority" type="number"/>
 	<setting default="true" id="VeohResolver_enabled" label="Enabled" type="bool"/>
-	<setting label="This plugin calls the veoh addon - change settings there." type="lsep"/>
 	<setting label="vid.ag" type="lsep"/>
 	<setting default="100" id="VidAgResolver_priority" label="Priority" type="number"/>
 	<setting default="true" id="VidAgResolver_enabled" label="Enabled" type="bool"/>
