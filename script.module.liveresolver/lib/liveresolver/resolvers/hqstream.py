@@ -5,7 +5,7 @@ import re,urlparse
 from liveresolver.modules import client
 
 def resolve(url):
-    #try:
+    try:
         try: referer = urlparse.parse_qs(urlparse.urlparse(url).query)['referer'][0]
         except: referer = url
         result = client.request(url, referer=referer)
@@ -20,6 +20,6 @@ def resolve(url):
 
         url = rtmp + ' swfUrl=http://filo.hqstream.tv/jwp6/jwplayer.flash.swf live=1 timeout=15 swfVfy=1 pageUrl=http://hqstream.tv'
         return url
-    #except:
-     #  return
+    except:
+        return
 

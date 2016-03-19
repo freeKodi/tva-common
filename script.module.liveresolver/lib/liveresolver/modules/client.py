@@ -24,16 +24,19 @@ import re,sys,urllib2,urlparse,HTMLParser,random
 import cache
 
 
-def request(url, close=True, error=False, proxy=None, post=None, headers=None, mobile=False, safe=True, referer=None, cookie=None, output='', timeout='30'):
+def request(url, close=True, error=False, proxy=None, post=None, headers=None, mobile=False, safe=True, referer=None, cookie=None, output='', timeout='30',cj=None):
     try:
         handlers = []
         if not proxy == None:
             handlers += [urllib2.ProxyHandler({'http':'%s' % (proxy)}), urllib2.HTTPHandler]
             opener = urllib2.build_opener(*handlers)
             opener = urllib2.install_opener(opener)
-        if output == 'cookie' or not close == True:
+        if output == 'cookie' or output=='cj' or not close == True:
             import cookielib
-            cookies = cookielib.LWPCookieJar()
+            if not cj==None:
+                cookies = cookielib.LWPCookieJar()
+            else:
+                cookies = cookielib.LWPCookieJar()
             handlers += [urllib2.HTTPHandler(), urllib2.HTTPSHandler(), urllib2.HTTPCookieProcessor(cookies)]
             opener = urllib2.build_opener(*handlers)
             opener = urllib2.install_opener(opener)
@@ -81,6 +84,9 @@ def request(url, close=True, error=False, proxy=None, post=None, headers=None, m
             result = []
             for c in cookies: result.append('%s=%s' % (c.name, c.value))
             result = "; ".join(result)
+
+        elif output == 'cj':
+            result = cookies
         elif output == 'response':
             if safe == True:
                 result = (str(response.code), response.read(1024 * 1024))

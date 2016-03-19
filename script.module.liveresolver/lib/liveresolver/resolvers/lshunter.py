@@ -2,7 +2,7 @@
 
 
 import re,urlparse
-from liveresolver.modules import client
+from liveresolver.modules import client,constants
 import urllib,urllib2
 import xbmcgui,xbmc,os,xbmcaddon
 path=xbmcaddon.Addon().getAddonInfo("path")
@@ -40,7 +40,7 @@ def resolve(url):
         streamer = result.replace('//file', '')
         streamer = re.compile("file *: *'(.+?)'").findall(streamer)[-1]
 
-        url=streamer + ' swfUrl=http://www.lshstream.com/jw/jwplayer.flash.swf flashver=WIN/2019,0,0,226 live=1 token=SECURET0KEN#yw%.?()@W! timeout=14 swfVfy=1 pageUrl=http://cdn.lshstream.com/embed.php?u=' + id
+        url=streamer + ' swfUrl=http://www.lshstream.com/jw/jwplayer.flash.swf flashver=' + constants.flash_ver() + ' live=1 token=SECURET0KEN#yw%.?()@W! timeout=14 swfVfy=1 pageUrl=http://cdn.lshstream.com/embed.php?u=' + id
 
         return url
     except:

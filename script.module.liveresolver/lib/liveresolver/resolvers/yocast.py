@@ -2,7 +2,7 @@
 
 
 import re,urlparse
-from liveresolver.modules import client
+from liveresolver.modules import client,constants
 
 
 def resolve(url):
@@ -17,7 +17,7 @@ def resolve(url):
 
         file = re.compile('file\s*:\s*(?:\'|\")(.+?)(?:\'|\")').findall(result)[-1].replace('.flv','')
         rtmp = re.compile('streamer\s*:\s*(?:\'|\")(.+?)(?:\'|\")').findall(result)[-1]
-        url = rtmp + ' playpath='+file+' swfUrl=http://www.yocast.tv/myplayer/jwplayer.flash.swf flashver=WIN\02019,0,0,226 live=1 timeout=14 swfVfy=1 pageUrl=' + page
+        url = rtmp + ' playpath='+file+' swfUrl=http://www.yocast.tv/myplayer/jwplayer.flash.swf flashver=' + constants.flash_ver() + ' live=1 timeout=14 swfVfy=1 pageUrl=' + page
         return url
     except:
         return

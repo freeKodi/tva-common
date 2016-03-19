@@ -21,12 +21,15 @@ def resolve(url):
         url = 'http://castalba.tv/embed.php?cid=%s&wh=600&ht=380&r=%s'%(cid,urlparse.urlparse(referer).netloc)
         pageUrl=url
 
-        result = client.request(url, referer=referer)
+        result = client.request(url, referer=referer,mobile=True)
         result=urllib.unquote(result)
+
         var = re.compile('var\s(.+?)\s*=\s*[\'\"](.+?)[\'\"]').findall(result)
         var_dict = dict(var)
+
+
         if 'm3u8' in result:
-            url = re.compile('filez\s*=\s*(?:unescape\()\'(.+?)\'').findall(result)[0]
+            url = re.compile('file.+?\s*=\s*(?:unescape\()[\'\"](.+?)[\'\"]').findall(result)[0]
             url = 'http://' + url + '.m3u8'
             url += '|%s' % urllib.urlencode({'User-Agent': client.agent(), 'Referer': referer})
             log("Castalba: Found m3u8 url: " + url)
@@ -43,19 +46,16 @@ def resolve(url):
                 except:
                     filePath = file
             swf = re.compile("'flashplayer'\s*:\s*\"(.+?)\"").findall(result)[0]
-            try:
-                streamer=re.findall('streamer\(\)\s*\{\s*return \'(.+?)\';\s*\}',result)[0]
-                if 'rtmp' not in streamer:
-                    streamer = 'rtmp://' + streamer
-            except:
-                try:
-                    streamer = re.compile("var sts\s*=\s*'(.+?)'").findall(result)[0]
-                except:
-                    try:
-                        streamer=re.findall('streamer\(\)\s*\{\s*return \'(.+?)\';\s*\}',result)[0]
-                    except:
-                        streamer = var_dict[re.findall('return\s*[\"\']rtmp[\"\']\+\s*(?:unescape\()?(.+?)\)?;',result)[0]]
-                        streamer = 'rtmp' + streamer
+            
+            strm_func = re.findall('function streamer\(\)\s*\{([^\{]+)',result)[0]
+            strm_func = re.sub('\s//[^;]+','',strm_func)
+
+            streamer = re.findall('return\s*([^;]+)',strm_func)[0]
+            for v in var_dict.keys():
+                streamer = streamer.replace(v,var_dict[v])
+
+            streamer = streamer.replace('"','').replace("'",'').replace('+','').strip()
+
             url = streamer.replace('///','//') + ' playpath=' + filePath +' swfUrl=' + swf + ' flashver=' + constants.flash_ver() +' live=true timeout=15 swfVfy=1 pageUrl=' + pageUrl
             log("Castalba: Found rtmp link: " + url)
 

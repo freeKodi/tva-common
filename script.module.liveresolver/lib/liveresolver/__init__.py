@@ -22,12 +22,12 @@ FLASH = constants.flash_ver()
     html - pass html content to resolver and it will search for embedded links from it, instead 
     of requesting the given url and searching from there.
 '''
-def resolve(url, cache_timeout=3, html=None):
+def resolve(url, cache_timeout=3, html=None, title='Video'):
     try:
         log("Resolver called with url: " + url)
         resolved=None
         if html==None:
-            resolved=resolve_it(url)
+            resolved=resolve_it(url,title=title)
         if resolved==None:
             if html==None and cache_timeout!=0:
                 #semi-cached resolving
@@ -35,7 +35,7 @@ def resolve(url, cache_timeout=3, html=None):
             else:
                 url = find_link(url,html=html)
             resolved=url
-            url=resolve_it(url)
+            url=resolve_it(url,title=title)
             if url!=None:
                 resolved=url
         log("Resolved url: " + resolved)
@@ -66,7 +66,7 @@ def delete_cache():
     Not intended for external use.
     This method is used internally for resolving the found link.
 '''
-def resolve_it(url):
+def resolve_it(url, title='Video'):
     if '.m3u8' in url or 'rtmp:' in url or '.flv' in url or '.mp4' in url or '.ts' in url or url.startswith('plugin://'):
         if '.m3u8' in url and '|' not in url:
             url += '|%s' % urllib.urlencode({'User-Agent': client.agent()})
@@ -79,7 +79,7 @@ def resolve_it(url):
 
     if url.startswith('acestream://') or url.startswith('sop://') or '.acelive' in url:
         from resolvers import sop_ace
-        resolved = sop_ace.resolve(url, 'Video')
+        resolved = sop_ace.resolve(url, title)
         return resolved
     netloc = prepare(urlparse.urlparse(url).netloc)
     if netloc in resolver_dict.keys():
@@ -1120,7 +1120,7 @@ def finder98(html,ref):
 #hdcast.info
 def finder99(html,ref):
     try:
-        id,rr = re.findall('fid=[\'\"](.+?)[\'\"].+?src=[\'\"]http://(?:www.)?hdcast.info/(embed.+?).js',html)[0]
+        id,rr = re.findall('fid=[\'\"](.+?)[\'\"].+?src=[\'\"]http://(?:www.)?hdcast.info/([^\.]+).js',html)[0]
         url = 'http://www.hdcast.info/%s.php?live=%s&vw=620&vh=490&referer=%s'%(rr,id,ref)
         return url
     except:
@@ -1190,7 +1190,7 @@ def finder105(html,ref):
     except:
         return
 
-
+#mips
 def finder106(html,ref):
     try:
         try:
@@ -1213,6 +1213,7 @@ def finder107(html,ref):
     except:
         return
 
+#streamsus
 def finder108(html,ref):
     try:
         url = re.findall('Watch Live\s*<a href=[\"\'](.+?)[\"\']>Here',html)[0]
@@ -1220,6 +1221,7 @@ def finder108(html,ref):
     except:
         return
 
+#f4m
 def finder109(html,ref):
     try:
         f4m = re.findall('name=[\"\']flashvars[\"\'].+?value=[\"\']src=([^&]+)&',html)[0]
@@ -1227,4 +1229,17 @@ def finder109(html,ref):
         return url
     except:
         return
+        return
+
+
+#zona4vip
+def finder110(html,ref):
+    try:
+        if 'zona4vip' not in ref:
+            return
+        fid = re.findall('fid=[\"\'](.+?)[\"\'].+?src=[\"\']/live.js',html)[0]
+        url = 'http://www.zona4vip.com/'+ fid
+
+        return find_link(url)
+    except:
         return

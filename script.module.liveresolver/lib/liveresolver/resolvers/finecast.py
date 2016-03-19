@@ -2,7 +2,7 @@
 
 
 import re,urlparse,cookielib,os
-from liveresolver.modules import client,unCaptcha,control
+from liveresolver.modules import client,unCaptcha,control,constants
 
 cookieFile = os.path.join(control.dataPath, 'finecastcookie.lwp')
 
@@ -30,7 +30,7 @@ def resolve(url):
         auth = re.findall('[\'\"](\?wmsAuthSign.+?)[\'\"]',result)[0]
         rtmp = 'rtmp://play.finecast.tv:1935/live%s'%auth
 
-        url = rtmp +  ' playpath=' + file + ' swfUrl=http://www.finecast.tv/player6/jwplayer.flash.swf flashver=WIN\2020,0,0,286 live=1 timeout=14 pageUrl=' + url
+        url = rtmp +  ' playpath=' + file + ' swfUrl=http://www.finecast.tv/player6/jwplayer.flash.swf flashver=' + constants.flash_ver() + ' live=1 timeout=14 pageUrl=' + url
         return url
 
         

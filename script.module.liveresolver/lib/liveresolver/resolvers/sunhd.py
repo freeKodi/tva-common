@@ -13,16 +13,13 @@ def resolve(url):
        
 
         result = client.request(url, referer=referer)
-        print(result)
         src = re.compile('.*?src=(?:\'|\")([^\'"><]+)(?:\'|\").*').findall(result)[0]
         result = client.request(src, referer=referer)
-        print(result)
         token = re.findall('securetoken\s*:\s*(.+?)\n',result)[0]
         surl = re.findall("var sUrl\s*=\s*'(.+?)';")
         cod1 = re.findall("var cod1\s*=\s*'(.+?)';")
         url = surl+'/' +cod1
         result = client.request(url, referer=referer)
-        print(result)
         return url
     except:
         return

@@ -15,7 +15,6 @@ def resolve(url):
 
 
         result = client.request(url,referer=referer)
-        print(result)
         url = re.findall('(http://.+?\.m3u8)',result)[0]
         url += '|%s' % urllib.urlencode({'User-Agent': client.agent(), 'Referer': referer})
         return url

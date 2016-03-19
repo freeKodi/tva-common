@@ -2,7 +2,7 @@
 
 
 import re,urllib,urlparse
-from liveresolver.modules import client
+from liveresolver.modules import client,constants
 from liveresolver.modules.log_utils import log
 
 def resolve(url):
@@ -21,7 +21,7 @@ def resolve(url):
         page2='http://biggestplayer.me/'+url+'?id='+id+'&width=620&height=490'
         result = client.request(page2, referer=page)
         url=re.findall('.*(http[^"\']+\.m3u8[^"\']*).*',result)[0]
-        url+='|%s' % urllib.urlencode({'Referer':page2, 'User-agent':client.agent(), 'X-Requested-With':'ShockwaveFlash/20.0.0.286'})
+        url+='|%s' % urllib.urlencode({'Referer':page2, 'User-agent':client.agent(), 'X-Requested-With':constants.get_shockwave()})
 
         return url
     except:

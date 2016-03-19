@@ -53,7 +53,8 @@ def resolve(url):
             pass
         result = decryptionUtils.doDemystify(result)
         file = re.findall("&file=rtmp://'\+thist\+'(.+?)&",result)[0].replace('/stream//','').replace('/stream/','').replace('?.stream','.stream')
-        rtmp = rowbalance.get()
+        server_id = re.findall('.*?boxig=.*?&srp=(\d+)',result)[0]
+        rtmp = rowbalance.get(server_id)
         rtmp = 'rtmp://%s/stream/'%rtmp
         url = rtmp+ ' playpath=' + file + ' swfUrl=http://thecdn.04stream.com/p/ooolo1.swf flashver=' + constants.flash_ver() + ' timeout=15 live=1 pageUrl='+page
         return url

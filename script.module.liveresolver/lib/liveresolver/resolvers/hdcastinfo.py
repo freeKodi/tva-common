@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re,urlparse,urllib
-from liveresolver.modules import client,decryptionUtils
+from liveresolver.modules import client,constants
 from liveresolver.modules.log_utils import log
 
 
@@ -39,7 +39,7 @@ def resolve(url):
                 url = url.replace('%s()'%f[0],f[1])
         url = url.replace(');','').split(" + '/' + ")
         streamer, file = url[0].replace('rtmpe','rtmp').strip(), url[1]
-        url=streamer + '/ playpath=' + file + ' swfUrl=http://www.hdcast.info/myplayer/jwplayer.flash.swf flashver=WIN\\2020,0,0,286 live=1 timeout=20 token=' + token + ' pageUrl=' + page
+        url=streamer + '/ playpath=' + file + ' swfUrl=http://www.hdcast.info/myplayer/jwplayer.flash.swf flashver=' + constants.flash_ver() + ' live=1 timeout=20 token=' + token + ' pageUrl=' + page
         return url
 
     except:

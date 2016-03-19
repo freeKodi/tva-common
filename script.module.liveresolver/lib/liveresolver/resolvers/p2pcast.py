@@ -20,7 +20,7 @@
 
 
 import re,urllib,urlparse,base64,json,socket
-from liveresolver.modules import client
+from liveresolver.modules import client,constants
 from liveresolver.modules.log_utils import log 
 
 def resolve(url):
@@ -36,7 +36,7 @@ def resolve(url):
         except: token = ''
         url = re.compile('murl\s*=\s*[\'|\"](.+?)[\'|\"]').findall(result)[0] 
         url = base64.b64decode(url) + token
-        url += '|Referer='+page+'&User-Agent=%s&X-Requested-With=ShockwaveFlash/20.0.0.286&Host=%s'%(client.agent(),urlparse.urlparse(url).netloc)
+        url += '|Referer='+page+'&User-Agent=%s&X-Requested-With=%s&Host=%s'%(constants.get_shockwave(),client.agent(),urlparse.urlparse(url).netloc)
 
         return url
     except:

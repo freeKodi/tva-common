@@ -2,7 +2,7 @@
 
 
 import re,urlparse
-from liveresolver.modules import client
+from liveresolver.modules import client,constants
 
 def resolve(url):
     try:
@@ -15,7 +15,7 @@ def resolve(url):
         rtmp = re.findall('.*rtmp":"([^"]+)"',result)[0]
         file = re.findall('"streamname":"([^"]+)"',result)[0]
         token = re.findall('"token":"([^"]+).*',result)[0]
-        url = rtmp + ' playpath='+file+' swfUrl=http://p.jwpcdn.com/6/12/jwplayer.flash.swf live=1 flashver=WIN\2019,0,0,226 timeout=10 token=' + token + ' swfVfy=1 pageUrl=' + referer
+        url = rtmp + ' playpath='+file+' swfUrl=http://p.jwpcdn.com/6/12/jwplayer.flash.swf live=1 flashver=' + constants.flash_ver() + ' timeout=10 token=' + token + ' swfVfy=1 pageUrl=' + referer
         
 
         return url

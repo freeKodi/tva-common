@@ -2,7 +2,7 @@
 
 
 import re,urlparse,base64
-from liveresolver.modules import client
+from liveresolver.modules import client,constants
 
 def resolve(url):
     try:
@@ -17,7 +17,7 @@ def resolve(url):
         curl = re.compile("curl\s*=\s*\"(.+?)\"").findall(result)[0]
         curl = base64.b64decode(curl)
         
-        url = curl + ' swfUrl=http://otronivel.me/jw7/jwplayer.flash.swf flashver=WIN/2019,0,0,226 timeout=15 live=true swfVfy=1 pageUrl=http://miplayer.net/embedplayer.php?width=640&height=480&id=%s&autoplay=true&strech=exactfit'%id
+        url = curl + ' swfUrl=http://otronivel.me/jw7/jwplayer.flash.swf flashver=' + constants.flash_ver() + ' timeout=15 live=true swfVfy=1 pageUrl=http://miplayer.net/embedplayer.php?width=640&height=480&id=%s&autoplay=true&strech=exactfit'%id
         return url
     except:
       return

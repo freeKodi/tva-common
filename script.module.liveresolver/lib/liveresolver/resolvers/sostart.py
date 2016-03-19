@@ -2,7 +2,7 @@
 
 
 import re,urlparse
-from liveresolver.modules import client
+from liveresolver.modules import client,constants
 
 def resolve(url):
     try:
@@ -13,7 +13,7 @@ def resolve(url):
     
         result = client.request(url, referer=referer)
         rtmp = re.findall('.*?[\'"]?file[\'"]?[:,]\s*[\'"]([^\'"]+)[\'"].*',result)[0]
-        url = rtmp+' swfUrl=http://sostart.org/jw/jwplayer.flash.swf flashver=WI/2020,0,0,286 token=SECURET0KEN#yw%.?()@W! live=1 timeout=14 swfVfy=1 pageUrl='+url
+        url = rtmp+' swfUrl=http://sostart.org/jw/jwplayer.flash.swf flashver=' + constants.flash_ver() + ' token=SECURET0KEN#yw%.?()@W! live=1 timeout=14 swfVfy=1 pageUrl='+url
         return url
     except:
         return

@@ -2,7 +2,7 @@
 
 
 import re,urlparse
-from liveresolver.modules import client
+from liveresolver.modules import client,constants
 
 def resolve(url):
     try:
@@ -17,7 +17,7 @@ def resolve(url):
         result = client.request(page2, referer=referer)
         ip = re.compile(".*redirect=([\.\d]+).*").findall(result)[0]
         rtmp='rtmp://%s/live/'%ip
-        url='%s playPath=%s?id=%s&pk=%s swfVfy=1 timeout=10 conn=S:OK live=true swfUrl=%s flashver=WIN\\2019,0,0,226 pageUrl=%s'%(rtmp,channel,id,pk,swf,url)
+        url='%s playPath=%s?id=%s&pk=%s swfVfy=1 timeout=10 conn=S:OK live=true swfUrl=%s flashver=' + constants.flash_ver() + ' pageUrl=%s'%(rtmp,channel,id,pk,swf,url)
         return url
     except:
         return

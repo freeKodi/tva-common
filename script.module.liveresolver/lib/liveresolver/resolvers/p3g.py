@@ -2,7 +2,7 @@
 
 
 import re,urlparse
-from liveresolver.modules import client
+from liveresolver.modules import client,constants
 
 
 def resolve(url):
@@ -18,7 +18,7 @@ def resolve(url):
         result = client.request(rtmp_url, referer=swf)
         rtmp = re.findall('.*redirect=([\.\d]+).*',result)[0]
         rtmp = 'rtmp://%s/live/'%rtmp
-        url = rtmp + ' playPath=' + channel + '?id=' + id + '&pk='+pk+' swfVfy=1 timeout=15 conn=S:OK live=true swfUrl='+swf + ' flashver=WIN\\2019,0,0,226 pageUrl=' + url
+        url = rtmp + ' playPath=' + channel + '?id=' + id + '&pk='+pk+' swfVfy=1 timeout=15 conn=S:OK live=true swfUrl='+swf + ' flashver=' + constants.flash_ver() + ' pageUrl=' + url
         return url
     except:
         return

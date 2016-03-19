@@ -2,7 +2,7 @@
 
 
 import re,urlparse,json
-from liveresolver.modules import client
+from liveresolver.modules import client,constants
 from liveresolver.modules.log_utils import log
 
 def resolve(url):
@@ -26,7 +26,7 @@ def resolve(url):
         rtmp = re.compile('(?:\'|\")?streamer(?:\'|\")?\s*:\s*(?:\'|\")(.+?)(?:\'|\")').findall(result)[0].replace(r'\\','\\').replace(r'\/','/')
         app = re.compile('.*.*rtmp://[\.\w:]*/([^\s]+)').findall(rtmp)[0]
 
-        url=rtmp +  ' playpath=' + file + ' swfUrl=http://www.iguide.to/player/secure_player_iguide_token.swf flashver=WIN\\2020,0,0,228 live=1 timeout=15 token=' + token + ' swfVfy=1 pageUrl='+page
+        url=rtmp +  ' playpath=' + file + ' swfUrl=http://www.iguide.to/player/secure_player_iguide_token.swf flashver=' + constants.flash_ver() + ' live=1 timeout=15 token=' + token + ' swfVfy=1 pageUrl='+page
         return url
     #except:
     #    return

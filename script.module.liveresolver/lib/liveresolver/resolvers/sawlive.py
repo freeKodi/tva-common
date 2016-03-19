@@ -8,7 +8,7 @@ from liveresolver.modules.log_utils import log
 
 
 def resolve(url):
-    #try:
+    try:
 
         page = re.compile('//(.+?)/(?:embed|v)/([0-9a-zA-Z-_]+)').findall(url)[0]
         page = 'http://%s/embed/%s' % (page[0], page[1])
@@ -72,12 +72,12 @@ def resolve(url):
         swf = re.compile("SWFObject\('(.+?)'").findall(result)[0]
 
         url = '%s playpath=%s swfUrl=%s pageUrl=%s live=1 timeout=60' % (strm, file, swf, url)
-        url = urllib.unquote(url)
+        url = urllib.unquote(url).replace('unescape(','')
         log("Sawlive: rtmp link found: " + url)
         return url
-    #except Exception as e:
-    #    log("Sawlive exception:\n" + str(e))
-    #    log("Sawlive: Resolver failed. Returning...")
-    #    return
+    except Exception as e:
+        log("Sawlive exception:\n" + str(e))
+        log("Sawlive: Resolver failed. Returning...")
+        return
 
 
