@@ -2,8 +2,8 @@
 
 
 import re,urlparse,cookielib,os
-from liveresolver.modules import client,unCaptcha,control,constants
-
+from liveresolver.modules import client,unCaptcha,control,constants, decryptionUtils
+from liveresolver.modules.log_utils import log
 cookieFile = os.path.join(control.dataPath, 'finecastcookie.lwp')
 
 def resolve(url):
@@ -21,17 +21,17 @@ def resolve(url):
         cj = get_cj()
 
         result = unCaptcha.performCaptcha(url, cj, headers = headers)
-
+        result = decryptionUtils.doDemystify(result)
         cj.save (cookieFile,ignore_discard=True)
         
 
 
         file = re.findall('[\'\"](.+?.stream)[\'\"]',result)[0]
         auth = re.findall('[\'\"](\?wmsAuthSign.+?)[\'\"]',result)[0]
-        rtmp = 'rtmp://play.finecast.tv:1935/live%s'%auth
+        rtmp = 'http://play.finecast.tv:1935/live/%s/playlist.m3u8%s'%(file,auth)
 
-        url = rtmp +  ' playpath=' + file + ' swfUrl=http://www.finecast.tv/player6/jwplayer.flash.swf flashver=' + constants.flash_ver() + ' live=1 timeout=14 pageUrl=' + url
-        return url
+        #url = rtmp +  ' playpath=' + file + ' swfUrl=http://www.finecast.tv/player6/jwplayer.flash.swf flashver=' + constants.flash_ver() + ' live=1 timeout=14 pageUrl=' + url
+        return rtmp
 
         
     except:

@@ -31,6 +31,7 @@ def resolve(url):
         page = src
         ref2 = src
         result = session.get(src).text
+        
         try:
             captcha = re.compile("<input type=\"hidden\" name=\"x\" value=\"(.+?)\">").findall(result)[0]
             url = re.compile("<input type=\"hidden\" name=\"url\" value=\"(.+?)\">").findall(result)[0]

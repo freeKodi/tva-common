@@ -2,7 +2,6 @@
 import urllib
 
 def resolve(url,name):
-	name = ''
 	if 'sop://'in url:
 		url = urllib.quote(url)
 		url='plugin://program.plexus/?mode=2&url=%s&name=%s'%(url,name.replace(' ','+'))

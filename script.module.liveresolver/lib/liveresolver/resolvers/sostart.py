@@ -3,6 +3,7 @@
 
 import re,urlparse
 from liveresolver.modules import client,constants
+from liveresolver.modules.log_utils import log
 
 def resolve(url):
     try:
