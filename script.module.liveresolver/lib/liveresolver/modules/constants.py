@@ -1,9 +1,9 @@
 
 def flash_ver():
-      return 'WIN\\2020,0,0,306'
+      return 'WIN\\2021,0,0,182'
 
 def get_shockwave():
-      return 'ShockwaveFlash/20.0.0.306'
+      return 'ShockwaveFlash/21.0.0.182'
       
 def blacklist():
       black = ['advert', 'banner', 'bet', 'c4.zedo', 'chat', 'chatango', '.css', 'histats']
@@ -14,6 +14,7 @@ resolver_dict={ 'sawlive.tv': 'sawlive',
             'streamking.cc': 'streamking',
             'castalba.tv' : 'castalba',
             'p2pcast.tv' : 'p2pcast',
+            'p2pcast.tech' : 'p2pcast',
             'finecast.tv' : 'finecast',
             'filmon.com' : 'filmon',
             'miplayer.net' : 'miplayer',
@@ -95,6 +96,7 @@ resolver_dict={ 'sawlive.tv': 'sawlive',
             'fastflash.pw' : 'castasap',
             'deltatv.xyz' : 'deltatv',
             'deltatv.pw' : 'deltatv',
+            'deltatv.site' : 'deltatv',
             'hdcast.info' : 'hdcastinfo',
             'theactionlive.com' : 'theactionlive',
             'ustvnow.com' : 'ustvnow',

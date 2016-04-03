@@ -25,10 +25,11 @@ from liveresolver.modules.log_utils import log
 
 def resolve(url):
     try:
-        channel = re.compile('[/v/|/view#]([\w]+)').findall(url)[-1]
-
+        url = url.replace('/true/default','')
+        channel = re.compile('[/v/|/view#|/widget#]([\w]+)').findall(url)[-1]
         url = 'http://veetle.com/index.php/stream/ajaxStreamLocation/%s/android-hls' % channel
         result = client.request(url, mobile=True)
+        log(result)
         url = json.loads(result)
         url = url['payload']
         return url

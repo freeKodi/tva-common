@@ -7,7 +7,7 @@ from liveresolver.modules.log_utils import log
 
 
 def resolve(url):
-    try:
+    #try:
 
         referer = urlparse.parse_qs(urlparse.urlparse(url).query)['referer'][0]
         headers = { 'referer': referer,
@@ -28,8 +28,13 @@ def resolve(url):
         for i in range(30):
             try:
                 result = req(url,post_data,headers)
-                streamer = re.findall('src=[\"\'](.+?)[\"\'].+?type=[\"\']video/mp4[\"\']',result)[0]
+                
+                ts = re.findall('ts=([^&;]+)',result)[0]
+                sg = re.findall('sg=([^&;]+)',result)[0]
+                auth = 'V&gt;JWhui^@2ESdu0?}&gt;AN'
+                file = re.findall('file=([^&;]+)',result)[0]
                 break
+
             except:
                 streamer = None
 
@@ -40,6 +45,7 @@ def resolve(url):
         for i in range(30):
             try:
                 result = req(url,post_data,headers)
+                
                 rtmp = re.findall('streamer:([^,]+)',result)[0].replace("+''",'').replace("''+",'').replace("+''+",'')
                 break
             except:
@@ -49,16 +55,11 @@ def resolve(url):
         if rtmp is None:
             return streamer + '|%s' % urllib.urlencode({'user-agent':client.agent(),'Referer':referer})
 
-        #exctract params from m3u8 link and add it to rtmp
-        file = urlparse.parse_qs(urlparse.urlparse(streamer).query)['file'][0]
-        sg = urlparse.parse_qs(urlparse.urlparse(streamer).query)['sg'][0]
-        ts = urlparse.parse_qs(urlparse.urlparse(streamer).query)['ts'][0]
-        auth = urlparse.parse_qs(urlparse.urlparse(streamer).query)['auth'][0]
-        url = rtmp + ' playpath=' + file + ' swfUrl=http://static.zoomtv.me/player/jwplayer.6.5.3.swf flashver=' +constants.flash_ver() + ' conn=S:' + file + ' conn=S:'+ts+' conn=S:'+sg+' conn=S:'+auth+' live=1 timeout=15 token=Q!lrB@G1)ww(-dQ4J4 swfVfy=1 pageUrl=' + pageUrl
+        url = rtmp + ' playpath=' + file + ' swfUrl=http://static.zoomtv.me/player/jwplayer.6.7.4.swf flashver=' +constants.flash_ver() + ' conn=S:' + file + ' conn=S:'+ts+' conn=S:'+sg+' conn=S:'+auth+' live=1 timeout=15 token=H69d331eccdf347b swfVfy=1 pageUrl=' + pageUrl
 
         return url
-    except:
-        return
+    #except:
+    #    return
 
 def req(url,post_data,headers):
     result = client.request(url, post=post_data,headers = headers)

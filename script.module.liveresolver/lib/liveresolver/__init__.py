@@ -132,13 +132,13 @@ def finder1(html,url):
     limit+=1
     ref=url
     try:
-        urls = re.findall('<i?frame.+?src=(?:\'|\")(.+?)(?:\'|\")',html)
+        urls = re.findall('<i?frame.+?src=(?:\'|\")(.+?)(?:\'|\")',html,flags=re.IGNORECASE)
         try:
             urls.append(re.findall("playStream\('iframe', '(.+?)'\)",html)[0])
         except: pass
 
         urls += re.findall('<a.+?href=[\'\"](/live-.+?stream.+?)[\'\"]',html)
-        urls += re.findall('src=["\'](http://www.hdmyt.info/channel.php\?file=[^"\']+)["\']',html) 
+        urls += re.findall('(http://www.hdmyt.info/(?:channel|player).php\?file=[^"\']+)["\']',html) 
         from random import shuffle
         for url in urls:
             if 'c4.zedo' in url or 'ProtectFile.File' in url or 'adServe' in url or 'facebook' in url or 'banner' in url:
@@ -955,9 +955,9 @@ def finder77(html,url):
 #weplayer
 def finder78(html,url):
     try:
-        id = re.findall("id=['\"](.+?)['\"];.+?src=['\"]http://weplayer.pw/.+?.js([^$]+)",html)[0]
-        url = 'http://weplayer.pw/stream.php?id=%s&width=640&height=480&referer=%s'%(id[0],url)
-        if '-->' in id[1]:
+        id = re.findall("id=['\"](.+?)['\"];.+?src=['\"]http://weplayer.([^/]+)/.+?.js([^\s]+)",html)[0]
+        url = 'http://weplayer.%s/stream.php?id=%s&width=640&height=480&referer=%s'%(id[1],id[0],url)
+        if '-->' in id[2]:
             return
         return find_link(url)
     except:
@@ -1111,7 +1111,7 @@ def finder97(html,url):
 #deltatv
 def finder98(html,ref):
     try:
-        x,y = re.findall('id=[\'\"](.+?)[\'\"].+?src=[\'\"]http://deltatv.(xyz|pw)/.+?.js',html)[0]
+        x,y = re.findall('id=[\'\"](.+?)[\'\"].+?src=[\'\"]http://deltatv.([^/]+)/.+?.js',html)[0]
         url = 'http://deltatv.%s/stream.php?id=%s&width=640&height=480&referer=%s'%(y,x,ref)
         return url
     except:
@@ -1244,3 +1244,29 @@ def finder110(html,ref):
     except:
         return
 
+#veetle livetvcdn
+def finder111(html,ref):
+    try:
+        id = re.findall('veetle&c=([^&]+)',ref)[0]
+        url = 'http://veetle.com/v/' + id
+        return url
+    except:
+        return
+
+#vlc new
+def finder112(html,ref):
+    try:
+        url = re.findall('version=[\"\']VideoLAN.VLCPlugin.2[\"\'].+?target=[\"\']([^\"\']+)',html)[0]
+        return url
+    except:
+        return
+
+#lsh stream embed
+def finder113(html,ref):
+    try:
+        fid = re.findall('fid=[\"\'](.+?)[\"\'].+?src=[\"\'].+?lshstream.com/embed.js',html)[0]
+        loc = urlparse.urlparse(ref).netloc
+        url = 'http://www.lshstream.com/embed.php?u=%s&vw=640&vh=360&domain=%s'%(fid,loc)
+        return find_link(url)
+    except:
+        return
