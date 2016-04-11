@@ -42,6 +42,12 @@
 		<setting default="false" id="SimplyDebridResolver_login" label="login" type="bool"/>
 		<setting default="" enable="eq(-1,true)" id="SimplyDebridResolver_username" label="Username" type="text"/>
 		<setting default="" enable="eq(-2,true)" id="SimplyDebridResolver_password" label="Password" option="hidden" type="text"/>
+		<setting label="Zevera" type="lsep"/>
+		<setting default="100" id="ZeveraResolver_priority" label="Priority" type="number"/>
+		<setting default="true" id="ZeveraResolver_enabled" label="Enabled" type="bool"/>
+		<setting default="false" id="ZeveraResolver_login" label="login" type="bool"/>
+		<setting default="" enable="eq(-1,true)" id="ZeveraResolver_username" label="Username" type="text"/>
+		<setting default="" enable="eq(-2,true)" id="ZeveraResolver_password" label="Password" option="hidden" type="text"/>
 	</category>
 	<category label="Resolvers 1">
 		<setting label="24uploading" type="lsep"/>
