@@ -23,7 +23,7 @@ def resolve(url):
 
         result = client.request(url, referer=referer,mobile=True)
         result=urllib.unquote(result)
-
+        log(result)
         var = re.compile('var\s(.+?)\s*=\s*[\'\"](.+?)[\'\"]').findall(result)
         var_dict = dict(var)
 
@@ -56,7 +56,9 @@ def resolve(url):
 
             streamer = streamer.replace('"','').replace("'",'').replace('+','').strip()
 
-            url = streamer.replace('///','//') + ' playpath=' + filePath +' swfUrl=' + swf + ' flashver=' + constants.flash_ver() +' live=true timeout=15 swfVfy=1 pageUrl=' + pageUrl
+            streamer = 'rtmp://' +  re.findall('.*//([^\'"]+live).*',streamer)[0]
+            streamer = streamer.replace('///','//')
+            url = streamer  + ' playpath=' + filePath +' swfUrl=' + swf + ' flashver=' + constants.flash_ver() +' live=true timeout=15 swfVfy=1 pageUrl=' + pageUrl
             log("Castalba: Found rtmp link: " + url)
 
         return url

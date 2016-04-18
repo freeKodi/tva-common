@@ -21,7 +21,15 @@ def resolve(url):
         
         result = client.request(page, referer=referer)
         
-        result = decryptionUtils.doDemystify(result)
+        unpacked = ''
+        packed = result.split('\n')
+        for i in packed:
+            try:
+                unpacked += jsunpack.unpack(i)
+            except:
+                pass
+        result += unpacked
+        result = urllib.unquote_plus(result)
         url = client.parseDOM(result, 'iframe', ret='src')[-1]
         url = url.replace(' ', '').replace('+','')
         var = re.compile('var\s(.+?)\s*=\s*[\'\"](.+?)[\'\"]').findall(result)
@@ -42,16 +50,24 @@ def resolve(url):
             for v in var_dict.keys(): url = url.replace("'%s'" % v, var_dict[v])
             for v in var_dict.keys(): url = url.replace("(%s)" % v, "(%s)" % var_dict[v])
         
-        
-        result = client.request(url, headers = headers)
-        result = decryptionUtils.doDemystify(result)
+        url = url.replace(' ', '').replace('+','').replace('"','')
+        result = client.request(url, headers = headers, mobile=True)
+        unpacked = ''
+        packed = result.split('\n')
+        for i in packed:
+            try:
+                unpacked += jsunpack.unpack(i)
+            except:
+                pass
+        result += unpacked
+        result = urllib.unquote_plus(result)
         var = re.compile('var\s(.+?)\s*=\s*[\'\"](.+?)[\'\"]').findall(result)
         var_dict = dict(var)       
         file = re.compile("'file'\s*(.+?)\)").findall(result)[0]
         file = file.replace('\'','')
         for v in var_dict.keys():
             file = file.replace(v,var_dict[v])
-        file = file.replace('+','').replace(',','').strip()
+        file = file.replace('+','').replace(',','').strip().replace(' ', '')
         log("Sawlive: Found file url: " + file)
         try:
             log("Sawlive: Finding m3u8 link.")
@@ -68,8 +84,8 @@ def resolve(url):
         strm = strm.replace('\'','')
         for v in var_dict.keys():
             strm = strm.replace(v,var_dict[v])
-        strm = strm.replace('+','').replace(',','').strip()
-        swf = re.compile("SWFObject\('(.+?)'").findall(result)[0]
+        strm = strm.replace('+','').replace(',','').strip().replace(' ', '')
+        swf = re.compile("SWFObject\('(.+?)'").findall(result)[0].replace(' ', '')
 
         url = '%s playpath=%s swfUrl=%s pageUrl=%s live=1 timeout=60' % (strm, file, swf, url)
         url = urllib.unquote(url).replace('unescape(','')

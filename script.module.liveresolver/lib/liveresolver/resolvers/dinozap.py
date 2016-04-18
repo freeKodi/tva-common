@@ -5,7 +5,7 @@ import re,urllib,urlparse,json,base64
 from liveresolver.modules import client,decryptionUtils
 from liveresolver.modules.log_utils import log
 def resolve(url):
-    try:
+    #try:
         pageUrl = url
         try: referer = urlparse.parse_qs(urlparse.urlparse(url).query)['referer'][0]
         except: referer = url
@@ -24,5 +24,5 @@ def resolve(url):
                 ref = 'http:' + vd
         url = file + '|%s' % urllib.urlencode({'Referer':ref,'User-agent':client.agent()})
         return url
-    except:
-        return
+    #except:
+    #    return

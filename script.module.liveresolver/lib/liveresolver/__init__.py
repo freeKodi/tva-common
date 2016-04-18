@@ -170,12 +170,12 @@ def finder1(html,url):
 #lsh stream
 def finder2(html,url):
     try:
-        reg = re.compile('[^\"\'](http://www.lshstream.com[^\"\']*)')
+        reg = re.compile('[\"\'](http://www.lshstream.com[^\"\']+)')
         url = re.findall(reg,html)[0]
         return url
     except:
         try:
-            reg = re.compile('<script type="text/javascript"> fid="(.+?)"; v_width=.+?;\s*v_height=.+?;</script><script type="text/javascript" src="http://cdn.lshstream.com/embed.js">')
+            reg = re.compile('fid=[\"\'](.+?)[\"\'].+?lshstream.com/embed.js')
             fid = re.findall(reg,html)[0]
             url = 'http://www.lshstream.com/embed.php?u=%s&vw=720&vh=420&live.realstreamunited.com=%s'%(fid,url)
             return url
@@ -1268,5 +1268,49 @@ def finder113(html,ref):
         loc = urlparse.urlparse(ref).netloc
         url = 'http://www.lshstream.com/embed.php?u=%s&vw=640&vh=360&domain=%s'%(fid,loc)
         return find_link(url)
+    except:
+        return
+#castamp
+def finder114(html,ref):
+    try:
+        fid = re.findall('channel=[\"\'](.+?)[\"\'].+?src=[\"\'].+?castamp.com/embed.js',html)[0]
+        url = 'http://castamp.com/embed.php?c=%s&vwidth=640&vheight=380&referer=%s'%(fid,ref)
+        return url
+    except:
+        return
+
+#bro.adca.st
+def finder115(html,ref):
+    
+    try:
+        id = re.findall('id=[\"\'](.+?)[\"\'].+?src=[\"\'].+?bro.adca.st/.+?.js',html)[0]
+        url = 'http://bro.adcast.tech/stream.php?id='+id+'&width=640&height=460&referer=' + ref
+        return url
+    except:
+        return
+
+#akamai rtmpe
+def finder116(html,ref):
+    try:
+        if 'akamai' in ref:
+            html = decryptionUtils.doDemystify(html)
+            swf,streamer,file,token = re.findall('flashplayer:[\"\']([^\"\']+)[\"\'],streamer:[\"\']([^\"\']+)[\"\'],file:[\"\']([^\"\']+)[\"\'],token:[\"\']([^\"\']+)[\"\']',html)[0]
+            swf = 'http://akamaistreaming.com/' + swf
+            url = '%s playpath=%s token=%s swfUrl=%s pageUrl=%s flashver=%s'%(streamer,file,token,swf,ref,constants.flash_ver())
+            return url
+    except:
+        return
+
+#zunox stream
+def finder117(html,ref):
+    try:
+        if 'zunox' in ref:
+            url = 'http://zunox.hk/players/' + re.findall('(proxy.php\?id=[^\"\']+)',html)[0]
+            h2 = client.request(url)
+            import json
+            j = json.loads(h2)
+            host  = urlparse.urlparse(j['url']).netloc.split(':')[0].replace(':80','')
+            url = j['url'].replace(':80','') +'.flv' + '|%s' % urllib.urlencode({'User-agent':client.agent(),'X-Requested-With':constants.get_shockwave(),'Referer':ref, 'Host':host, 'Connection':'keep-alive'})
+            return url
     except:
         return

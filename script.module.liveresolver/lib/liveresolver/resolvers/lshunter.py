@@ -42,7 +42,7 @@ def resolve(url):
 
         url=streamer + ' swfUrl=http://www.lshstream.com/jw/jwplayer.flash.swf flashver=' + constants.flash_ver() + ' live=1 token=SECURET0KEN#yw%.?()@W! timeout=14 swfVfy=1 pageUrl=http://cdn.lshstream.com/embed.php?u=' + id
 
-        return url
+        return url.strip()
     except:
         return
 

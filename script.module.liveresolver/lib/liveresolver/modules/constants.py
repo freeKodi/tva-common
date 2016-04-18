@@ -101,5 +101,6 @@ resolver_dict={ 'sawlive.tv': 'sawlive',
             'theactionlive.com' : 'theactionlive',
             'ustvnow.com' : 'ustvnow',
             'hornos.moy.su' : 'kolstg',
-            'mipsplayer.com' : 'mips'
+            'mipsplayer.com' : 'mips',
+            'bro.adcast.tech' : 'broadcast'
               }

@@ -2,7 +2,7 @@
 
 import re,urlparse
 from liveresolver.modules import client
-
+from liveresolver.modules.log_utils import log
 
 def resolve(url):
     #try:
@@ -10,7 +10,7 @@ def resolve(url):
         except: referer = url
         
         result = client.request(url, referer=referer)
-        print(result)
+        log(result)
         return url
     #except:
     #    return
