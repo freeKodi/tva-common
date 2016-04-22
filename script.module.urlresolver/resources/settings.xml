@@ -13,6 +13,13 @@
 		<setting default="false" id="AllDebridResolver_login" label="login" type="bool"/>
 		<setting default="" enable="eq(-1,true)" id="AllDebridResolver_username" label="Username" type="text"/>
 		<setting default="" enable="eq(-2,true)" id="AllDebridResolver_password" label="Password" option="hidden" type="text"/>
+		<setting label="MegaDebrid" type="lsep"/>
+		<setting default="100" id="MegaDebridResolver_priority" label="Priority" type="number"/>
+		<setting default="true" id="MegaDebridResolver_enabled" label="Enabled" type="bool"/>
+		<setting default="true" id="MegaDebridResolver_use_https" label="Use HTTPS" type="bool"/>
+		<setting default="false" id="MegaDebridResolver_login" label="login" type="bool"/>
+		<setting default="" enable="eq(-1,true)" id="MegaDebridResolver_username" label="Username" type="text"/>
+		<setting default="" enable="eq(-2,true)" id="MegaDebridResolver_password" label="Password" option="hidden" type="text"/>
 		<setting label="Premiumize.me" type="lsep"/>
 		<setting default="100" id="PremiumizeMeResolver_priority" label="Priority" type="number"/>
 		<setting default="true" id="PremiumizeMeResolver_enabled" label="Enabled" type="bool"/>
@@ -100,6 +107,9 @@
 		<setting default="100" id="FacebookResolver_priority" label="Priority" type="number"/>
 		<setting default="true" id="FacebookResolver_enabled" label="Enabled" type="bool"/>
 		<setting default="0" id="FacebookResolver_quality" label="Video Quality" type="enum" values="High|Standard"/>
+		<setting label="fastplay.sx" type="lsep"/>
+		<setting default="100" id="LetwatchResolver_priority" label="Priority" type="number"/>
+		<setting default="true" id="LetwatchResolver_enabled" label="Enabled" type="bool"/>
 		<setting label="filehoot" type="lsep"/>
 		<setting default="100" id="FilehootResolver_priority" label="Priority" type="number"/>
 		<setting default="true" id="FilehootResolver_enabled" label="Enabled" type="bool"/>
@@ -124,11 +134,11 @@
 		<setting label="grifthost" type="lsep"/>
 		<setting default="100" id="GrifthostResolver_priority" label="Priority" type="number"/>
 		<setting default="true" id="GrifthostResolver_enabled" label="Enabled" type="bool"/>
-		<setting label="hugefiles" type="lsep"/>
-		<setting default="100" id="HugefilesResolver_priority" label="Priority" type="number"/>
-		<setting default="true" id="HugefilesResolver_enabled" label="Enabled" type="bool"/>
 	</category>
 	<category label="Resolvers 2">
+		<setting label="idowatch" type="lsep"/>
+		<setting default="100" id="IDoWatchResolver_priority" label="Priority" type="number"/>
+		<setting default="true" id="IDoWatchResolver_enabled" label="Enabled" type="bool"/>
 		<setting label="ipithos.to" type="lsep"/>
 		<setting default="100" id="IpithosResolver_priority" label="Priority" type="number"/>
 		<setting default="true" id="IpithosResolver_enabled" label="Enabled" type="bool"/>
@@ -162,9 +172,6 @@
 		<setting label="movshare" type="lsep"/>
 		<setting default="100" id="MovshareResolver_priority" label="Priority" type="number"/>
 		<setting default="true" id="MovshareResolver_enabled" label="Enabled" type="bool"/>
-		<setting label="mp4edge.com" type="lsep"/>
-		<setting default="100" id="Mp4EdgeResolver_priority" label="Priority" type="number"/>
-		<setting default="true" id="Mp4EdgeResolver_enabled" label="Enabled" type="bool"/>
 		<setting label="mp4stream" type="lsep"/>
 		<setting default="100" id="Mp4streamResolver_priority" label="Priority" type="number"/>
 		<setting default="true" id="Mp4streamResolver_enabled" label="Enabled" type="bool"/>
@@ -193,6 +200,9 @@
 		<setting label="playhd.video" type="lsep"/>
 		<setting default="100" id="PlayHDResolver_priority" label="Priority" type="number"/>
 		<setting default="true" id="PlayHDResolver_enabled" label="Enabled" type="bool"/>
+		<setting label="playu" type="lsep"/>
+		<setting default="100" id="PlayUResolver_priority" label="Priority" type="number"/>
+		<setting default="true" id="PlayUResolver_enabled" label="Enabled" type="bool"/>
 		<setting label="playwire" type="lsep"/>
 		<setting default="100" id="PlaywireResolver_priority" label="Priority" type="number"/>
 		<setting default="true" id="PlaywireResolver_enabled" label="Enabled" type="bool"/>
@@ -202,16 +212,11 @@
 		<setting label="promptfile" type="lsep"/>
 		<setting default="100" id="PromptfileResolver_priority" label="Priority" type="number"/>
 		<setting default="true" id="PromptfileResolver_enabled" label="Enabled" type="bool"/>
-		<setting label="purevid" type="lsep"/>
-		<setting default="100" id="PureVidResolver_priority" label="Priority" type="number"/>
-		<setting default="true" id="PureVidResolver_enabled" label="Enabled" type="bool"/>
-		<setting default="false" id="PureVidResolver_login" label="login" type="bool"/>
-		<setting default="" enable="eq(-1,true)" id="PureVidResolver_username" label="Username" type="text"/>
-		<setting default="" enable="eq(-2,true)" id="PureVidResolver_password" label="Password" option="hidden" type="text"/>
-		<setting default="Maximum" id="PureVidResolver_quality" label="Video quality" type="labelenum" values="FLV|Maximum"/>
-		<setting label="This plugin calls the Purevid urlresolver - change settings there." type="lsep"/>
 	</category>
 	<category label="Resolvers 3">
+		<setting label="rapidvideo.ws" type="lsep"/>
+		<setting default="100" id="RapidVideoResolver_priority" label="Priority" type="number"/>
+		<setting default="true" id="RapidVideoResolver_enabled" label="Enabled" type="bool"/>
 		<setting label="shared2.me" type="lsep"/>
 		<setting default="100" id="Shared2meResolver_priority" label="Priority" type="number"/>
 		<setting default="true" id="Shared2meResolver_enabled" label="Enabled" type="bool"/>
@@ -285,11 +290,11 @@
 		<setting default="false" id="VeeHDResolver_login" label="login" type="bool"/>
 		<setting default="" enable="eq(-1,true)" id="VeeHDResolver_username" label="Username" type="text"/>
 		<setting default="" enable="eq(-2,true)" id="VeeHDResolver_password" label="Password" option="hidden" type="text"/>
-		<setting label="veoh" type="lsep"/>
-		<setting default="100" id="VeohResolver_priority" label="Priority" type="number"/>
-		<setting default="true" id="VeohResolver_enabled" label="Enabled" type="bool"/>
 	</category>
 	<category label="Resolvers 4">
+		<setting label="vid.ag" type="lsep"/>
+		<setting default="100" id="VidAgResolver_priority" label="Priority" type="number"/>
+		<setting default="true" id="VidAgResolver_enabled" label="Enabled" type="bool"/>
 		<setting label="vid.gg" type="lsep"/>
 		<setting default="100" id="VidggResolver_priority" label="Priority" type="number"/>
 		<setting default="true" id="VidggResolver_enabled" label="Enabled" type="bool"/>
@@ -363,11 +368,11 @@
 		<setting label="vshare.eu" type="lsep"/>
 		<setting default="100" id="VshareEuResolver_priority" label="Priority" type="number"/>
 		<setting default="true" id="VshareEuResolver_enabled" label="Enabled" type="bool"/>
-		<setting label="watchvideo.us" type="lsep"/>
-		<setting default="100" id="WatchVideoResolver_priority" label="Priority" type="number"/>
-		<setting default="true" id="WatchVideoResolver_enabled" label="Enabled" type="bool"/>
 	</category>
 	<category label="Resolvers 5">
+		<setting label="www.filmshowonline.net" type="lsep"/>
+		<setting default="100" id="FilmShowResolver_priority" label="Priority" type="number"/>
+		<setting default="true" id="FilmShowResolver_enabled" label="Enabled" type="bool"/>
 		<setting label="xvidstage" type="lsep"/>
 		<setting default="100" id="XvidstageResolver_priority" label="Priority" type="number"/>
 		<setting default="true" id="XvidstageResolver_enabled" label="Enabled" type="bool"/>
