@@ -148,7 +148,7 @@
 		<setting label="KingFiles" type="lsep"/>
 		<setting default="100" id="KingFilesResolver_priority" label="Priority" type="number"/>
 		<setting default="true" id="KingFilesResolver_enabled" label="Enabled" type="bool"/>
-		<setting label="letwatch.us" type="lsep"/>
+		<setting label="letwatch" type="lsep"/>
 		<setting default="100" id="LetwatchResolver_priority" label="Priority" type="number"/>
 		<setting default="true" id="LetwatchResolver_enabled" label="Enabled" type="bool"/>
 		<setting label="mail.ru" type="lsep"/>
@@ -253,6 +253,10 @@
 		<setting label="thevideobee.to" type="lsep"/>
 		<setting default="100" id="VideoBeeResolver_priority" label="Priority" type="number"/>
 		<setting default="true" id="VideoBeeResolver_enabled" label="Enabled" type="bool"/>
+		<setting label="thevideos" type="lsep"/>
+		<setting default="100" id="TheVideosResolver_priority" label="Priority" type="number"/>
+		<setting default="true" id="TheVideosResolver_enabled" label="Enabled" type="bool"/>
+		<setting default="false" id="TheVideosResolver_auto_pick" label="Automatically pick best quality" type="bool" visible="true"/>
 		<setting label="trollvid.net" type="lsep"/>
 		<setting default="100" id="TrollVidResolver_priority" label="Priority" type="number"/>
 		<setting default="true" id="TrollVidResolver_enabled" label="Enabled" type="bool"/>
