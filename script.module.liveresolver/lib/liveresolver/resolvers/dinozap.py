@@ -5,7 +5,7 @@ import re,urllib,urlparse,json,base64
 from liveresolver.modules import client,decryptionUtils
 from liveresolver.modules.log_utils import log
 def resolve(url):
-    #try:
+    try:
         pageUrl = url
         try: referer = urlparse.parse_qs(urlparse.urlparse(url).query)['referer'][0]
         except: referer = url
@@ -20,9 +20,9 @@ def resolve(url):
             vd = base64.b64decode(v)
             if 'm3u8' in vd:
                 file = vd
-            if vd.startswith('//'):
-                ref = 'http:' + vd
-        url = file + '|%s' % urllib.urlencode({'Referer':ref,'User-agent':client.agent()})
+        host = urlparse.urlparse(pageUrl).netloc
+        origin = 'http://' + host
+        url = file + '|%s' % urllib.urlencode({'Referer':pageUrl,'User-agent':'Mozilla/5.0 (X11; Linux x86_64; rv:45.0) Gecko/20100101 Firefox/45.0','Accept-Encoding':'gzip,deflate lzma, sdch','DNT':'1','Connection':'keep-alive','Icy-Metadata':'0','Origin':origin,'Host':host})
         return url
-    #except:
-    #    return
+    except:
+        return

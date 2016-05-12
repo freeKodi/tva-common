@@ -2,7 +2,7 @@
 
 
 import re,urlparse,urllib
-from liveresolver.modules import client
+from liveresolver.modules import client,constants
 
 def resolve(url):
     try:
@@ -16,7 +16,7 @@ def resolve(url):
 
         result = client.request(page,referer=referer)
         url = re.findall('.*(http[^"\']+\.m3u8[^"\']*).*',result)[0]
-        url += '|%s' % urllib.urlencode({'User-Agent': client.agent(), 'Referer': referer})
+        url += '|%s' % urllib.urlencode({'User-Agent': client.agent(), 'Referer': page,'X-Requested-With':constants.get_shockwave()})
         
         return url
     except:

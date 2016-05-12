@@ -23,7 +23,6 @@ def resolve(url):
 
         result = client.request(url, referer=referer,mobile=True)
         result=urllib.unquote(result)
-        log(result)
         var = re.compile('var\s(.+?)\s*=\s*[\'\"](.+?)[\'\"]').findall(result)
         var_dict = dict(var)
 
@@ -46,17 +45,11 @@ def resolve(url):
                 except:
                     filePath = file
             swf = re.compile("'flashplayer'\s*:\s*\"(.+?)\"").findall(result)[0]
-            
-            strm_func = re.findall('function streamer\(\)\s*\{([^\{]+)',result)[0]
+            strm_func = result
             strm_func = re.sub('\s//[^;]+','',strm_func)
 
-            streamer = re.findall('return\s*([^;]+)',strm_func)[0]
-            for v in var_dict.keys():
-                streamer = streamer.replace(v,var_dict[v])
-
-            streamer = streamer.replace('"','').replace("'",'').replace('+','').strip()
-
-            streamer = 'rtmp://' +  re.findall('.*//([^\'"]+live).*',streamer)[0]
+           
+            streamer = 'rtmp://' +  re.findall('[\"\']([\d\.]+\/live).*',strm_func)[0]
             streamer = streamer.replace('///','//')
             url = streamer  + ' playpath=' + filePath +' swfUrl=' + swf + ' flashver=' + constants.flash_ver() +' live=true timeout=15 swfVfy=1 pageUrl=' + pageUrl
             log("Castalba: Found rtmp link: " + url)

@@ -25,7 +25,6 @@ def resolve(url):
         cj.save (cookieFile,ignore_discard=True)
         
 
-
         file = re.findall('[\'\"](.+?.stream)[\'\"]',result)[0]
         auth = re.findall('[\'\"](\?wmsAuthSign.+?)[\'\"]',result)[0]
         rtmp = 'http://play.finecast.tv:1935/live/%s/playlist.m3u8%s'%(file,auth)

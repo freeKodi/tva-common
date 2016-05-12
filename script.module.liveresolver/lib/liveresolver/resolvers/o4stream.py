@@ -14,7 +14,7 @@ captcha_img = os.path.join(path, 'captcha.jpg')
 
 
 def resolve(url):
-    
+
     try:
         session=requests.Session()
         try: referer = urlparse.parse_qs(urlparse.urlparse(url).query)['referer'][0]
@@ -53,11 +53,20 @@ def resolve(url):
         except:
             pass
         result = decryptionUtils.doDemystify(result)
-        file = re.findall("&file=rtmp://'\+thist\+'(.+?)&",result)[0].replace('/stream//','').replace('/stream/','').replace('?.stream','.stream')
+        var = re.compile('var\s(.+?)\s*=\s*[\'\"](.+?)[\'\"]').findall(result)
         server_id = re.findall('.*?boxig=.*?&srp=(\d+)',result)[0]
         rtmp = rowbalance.get(server_id)
-        rtmp = 'rtmp://%s/stream/'%rtmp
-        url = rtmp+ ' playpath=' + file + ' swfUrl=http://thecdn.04stream.com/p/ooolo1.swf flashver=' + constants.flash_ver() + ' timeout=15 live=1 pageUrl='+page
+        var.append(('thist',rtmp))
+        for i in range(100):
+            for v in var: result = result.replace("+%s+" % v[0], '%s'%v[1])
+            for v in var: result = result.replace("+%s" % v[0], '%s'%v[1])
+            for v in var: result = result.replace("%s+" % v[0], '%s'%v[1])
+            
+        
+        
+        file = re.findall("&file=(rtmp://[^&]+)&",result)[0]#.replace('/stream//','').replace('/stream/','').replace('?.stream','.stream')
+        file = file.replace('\'','').replace('"','')
+        url = file + ' swfUrl=http://thecdn.04stream.com/p/ooolo1.swf flashver=' + constants.flash_ver() + ' timeout=15 live=1 pageUrl='+page
         return url
     except:
         return

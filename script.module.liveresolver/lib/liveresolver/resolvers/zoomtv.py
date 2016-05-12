@@ -30,7 +30,6 @@ def resolve(url):
         post_data = urllib.urlencode({'uagent':'Apple-iPhone/701.341', 'pid':pid})
         result = req(url,post_data,headers)
         
-        log(result)
         rtmp = re.findall('.*[^\w](\w+)\s*=.{0,20}(rtmp[^\']*).*(?:streamer.{0,20}\1).*',result)[0]
         log(rtmp)
         
@@ -47,17 +46,10 @@ def resolve(url):
 #http://184.75.223.114:1935/zmtvliveme/UoJGbMgQme/playlist.m3u8?file=UoJGbMgQme&ts=1460893820&sg=2d5fe25dd51f705df999017031e952b5&auth=V&gt;JWhui^@2ESdu0?}&gt;AN
 def req(url,post_data,headers):
     result = client.request(url, post=post_data,headers = headers)
-    unpacked = ''
-    packed = result.split('\n')
-    for i in packed:
-        try:
-            unpacked += jsunpack.unpack(i)
-        except:
-            pass
-    result += unpacked
-    var = re.compile('var\s(.+?)\s*=\s*\'(.+?)\'').findall(result)
-    vars = dict(var)
-    result = re.sub('var.+?=.+?;','',result)
-    for v in vars.keys():
-        result = result.replace(v,vars[v])
+    result = decryptionUtils.doDemystify(result)
+    #var = re.compile('var\s(.+?)\s*=\s*\'(.+?)\'').findall(result)
+    #vars = dict(var)
+    #result = re.sub('var.+?=.+?;','',result)
+    #for v in vars.keys():
+    #    result = result.replace(v,vars[v])
     return result

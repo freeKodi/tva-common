@@ -12,6 +12,9 @@ cookieFile = os.path.join(control.dataPath, 'streamlivecookie.lwp')
 
 
 def resolve(url):
+    if 'embed' in url:
+        import streamlive_embed
+        return streamlive_embed.resolve(url)
     
     try:
         page = url

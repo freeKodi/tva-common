@@ -30,6 +30,7 @@ def resolve(url):
                 pass
         result += unpacked
         result = urllib.unquote_plus(result)
+        rplcs = re.findall(';.+?=(.+?).replace\([\"\'](.+?)[\"\']\s*,\s*[\"\']([^\"\']*)[\"\']',result)
         url = client.parseDOM(result, 'iframe', ret='src')[-1]
         url = url.replace(' ', '').replace('+','')
         var = re.compile('var\s(.+?)\s*=\s*[\'\"](.+?)[\'\"]').findall(result)
@@ -50,7 +51,9 @@ def resolve(url):
             for v in var_dict.keys(): url = url.replace("'%s'" % v, var_dict[v])
             for v in var_dict.keys(): url = url.replace("(%s)" % v, "(%s)" % var_dict[v])
         
-        url = url.replace(' ', '').replace('+','').replace('"','')
+        url = url.replace(' ', '').replace('+','').replace('"','').replace('\'','')
+        for r in rplcs:
+            url = url.replace(r[1],r[2])
         result = client.request(url, headers = headers, mobile=True)
         unpacked = ''
         packed = result.split('\n')
@@ -62,13 +65,17 @@ def resolve(url):
         result += unpacked
         result = urllib.unquote_plus(result)
         var = re.compile('var\s(.+?)\s*=\s*[\'\"](.+?)[\'\"]').findall(result)
+        rplcs = re.findall(';.+?=(.+?).replace\([\"\'](.+?)[\"\']\s*,\s*[\"\']([^\"\']*)[\"\']',result)
         var_dict = dict(var)       
         file = re.compile("'file'\s*(.+?)\)").findall(result)[0]
         file = file.replace('\'','')
+            
         for v in var_dict.keys():
             file = file.replace(v,var_dict[v])
         file = file.replace('+','').replace(',','').strip().replace(' ', '')
         log("Sawlive: Found file url: " + file)
+        if 'f4m' in file:
+            return file
         try:
             log("Sawlive: Finding m3u8 link.")
             if not file.startswith('http'): raise Exception()
@@ -89,6 +96,9 @@ def resolve(url):
 
         url = '%s playpath=%s swfUrl=%s pageUrl=%s live=1 timeout=60' % (strm, file, swf, url)
         url = urllib.unquote(url).replace('unescape(','')
+
+        for r in rplcs:
+            url = url.replace(r[1],r[2])
         log("Sawlive: rtmp link found: " + url)
         return url
     except Exception as e:
