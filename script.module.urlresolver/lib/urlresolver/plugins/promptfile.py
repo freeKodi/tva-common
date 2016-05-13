@@ -33,7 +33,7 @@ class PromptfileResolver(UrlResolver):
         web_url = self.get_url(host, media_id)
         headers = {'User-Agent': common.FF_USER_AGENT}
         html = self.net.http_GET(web_url, headers=headers).content
-        match = re.search("val\(\)\s*\+\s*'([^']+)", html)
+        match = re.search('''val\(\)\s*\+\s*['"]([^"']+)''', html)
         suffix = match.group(1) if match else ''
         data = helpers.get_hidden(html)
         for name in data:
