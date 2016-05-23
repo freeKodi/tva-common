@@ -19,7 +19,7 @@
   </extension>
 </addon>
 
-<addon id="script.module.urlresolver" name="URLResolver" version="3.0.5" provider-name="Eldorado">
+<addon id="script.module.urlresolver" name="URLResolver" version="3.0.6" provider-name="Eldorado">
 	<requires>
 		<import addon="xbmc.python" version="2.1.0" />
 	</requires>

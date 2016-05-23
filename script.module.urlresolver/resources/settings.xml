@@ -108,8 +108,8 @@
 		<setting default="true" id="FacebookResolver_enabled" label="Enabled" type="bool"/>
 		<setting default="0" id="FacebookResolver_quality" label="Video Quality" type="enum" values="High|Standard"/>
 		<setting label="fastplay.sx" type="lsep"/>
-		<setting default="100" id="LetwatchResolver_priority" label="Priority" type="number"/>
-		<setting default="true" id="LetwatchResolver_enabled" label="Enabled" type="bool"/>
+		<setting default="100" id="FastplayResolver_priority" label="Priority" type="number"/>
+		<setting default="true" id="FastplayResolver_enabled" label="Enabled" type="bool"/>
 		<setting label="filehoot" type="lsep"/>
 		<setting default="100" id="FilehootResolver_priority" label="Priority" type="number"/>
 		<setting default="true" id="FilehootResolver_enabled" label="Enabled" type="bool"/>
@@ -320,6 +320,9 @@
 		<setting label="videoraj.to" type="lsep"/>
 		<setting default="100" id="VideoRajResolver_priority" label="Priority" type="number"/>
 		<setting default="true" id="VideoRajResolver_enabled" label="Enabled" type="bool"/>
+		<setting label="videosky.to" type="lsep"/>
+		<setting default="100" id="VideoSkyResolver_priority" label="Priority" type="number"/>
+		<setting default="true" id="VideoSkyResolver_enabled" label="Enabled" type="bool"/>
 		<setting label="videott" type="lsep"/>
 		<setting default="100" id="VideoTTResolver_priority" label="Priority" type="number"/>
 		<setting default="true" id="VideoTTResolver_enabled" label="Enabled" type="bool"/>
@@ -369,11 +372,11 @@
 		<setting label="vshare" type="lsep"/>
 		<setting default="100" id="VshareResolver_priority" label="Priority" type="number"/>
 		<setting default="true" id="VshareResolver_enabled" label="Enabled" type="bool"/>
-		<setting label="vshare.eu" type="lsep"/>
-		<setting default="100" id="VshareEuResolver_priority" label="Priority" type="number"/>
-		<setting default="true" id="VshareEuResolver_enabled" label="Enabled" type="bool"/>
 	</category>
 	<category label="Resolvers 5">
+		<setting label="watchvideo" type="lsep"/>
+		<setting default="100" id="WatchVideoResolver_priority" label="Priority" type="number"/>
+		<setting default="true" id="WatchVideoResolver_enabled" label="Enabled" type="bool"/>
 		<setting label="www.filmshowonline.net" type="lsep"/>
 		<setting default="100" id="FilmShowResolver_priority" label="Priority" type="number"/>
 		<setting default="true" id="FilmShowResolver_enabled" label="Enabled" type="bool"/>
