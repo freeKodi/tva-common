@@ -24,7 +24,7 @@ def resolve(url):
             captcha = re.compile("<input type=\"hidden\" name=\"x\" value=\"(.+?)\">").findall(result)[0]
             url = re.compile("<input type=\"hidden\" name=\"url\" value=\"(.+?)\">").findall(result)[0]
             if 'http' not in url:
-                url = 'http://www.lshstream.com'+ url
+                url = 'http://www.lshstreams.com'+ url
             cap_url = 'http://www.blocked.com/captcha.php?x=' + captcha
             urllib.urlretrieve(cap_url,captcha_img)
             input = get_response(captcha_img)
@@ -32,15 +32,15 @@ def resolve(url):
                          'x' : captcha,
                          'url' : url,
                          'val' : input}
-            session.headers.update({'Host':'www.lshstream.com',
-                                'Origin': 'http://www.lshstream.com'})
+            session.headers.update({'Host':'www.lshstreams.com',
+                                'Origin': 'http://www.lshstreams.com'})
             result = session.post(url, data=urllib.urlencode(post_data)).text
         except:
           pass
         streamer = result.replace('//file', '')
         streamer = re.compile("file *: *'(.+?)'").findall(streamer)[-1]
 
-        url=streamer + ' swfUrl=http://www.lshstream.com/jw/jwplayer.flash.swf flashver=' + constants.flash_ver() + ' live=1 token=SECURET0KEN#yw%.?()@W! timeout=14 swfVfy=1 pageUrl=http://cdn.lshstream.com/embed.php?u=' + id
+        url=streamer + ' swfUrl=http://www.lshstreams.com/jw/jwplayer.flash.swf flashver=' + constants.flash_ver() + ' live=1 token=SECURET0KEN#yw%.?()@W! timeout=14 swfVfy=1 pageUrl=http://cdn.lshstreams.com/embed.php?u=' + id
 
         return url.strip()
     except:

@@ -16,7 +16,7 @@ def resolve(url):
                                  'Connection' : 'keep-alive',
                                  'Host' : 'www.zoomtv.me',
                                  'Origin' : urlparse.urlparse(referer).netloc,
-                                 'User-Agent' : 'Apple-iPhone/701.341'
+                                 'User-Agent' : client.agent()
                                  }
         fid = urlparse.parse_qs(urlparse.urlparse(url).query)['v'][0]
         pid = urlparse.parse_qs(urlparse.urlparse(url).query)['pid'][0]
@@ -26,12 +26,10 @@ def resolve(url):
         
         
         #get desktop stream
-        headers.update({ 'User-Agent' : 'Apple-iPhone/701.341' })
+        #headers.update({ 'User-Agent' : 'Apple-iPhone/701.341' })
         post_data = urllib.urlencode({'uagent':'Apple-iPhone/701.341', 'pid':pid})
         result = req(url,post_data,headers)
-        
         rtmp = re.findall('.*[^\w](\w+)\s*=.{0,20}(rtmp[^\']*).*(?:streamer.{0,20}\1).*',result)[0]
-        log(rtmp)
         
     
         #for HQ links(no rtmp)

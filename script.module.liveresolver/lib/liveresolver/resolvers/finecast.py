@@ -7,7 +7,7 @@ from liveresolver.modules.log_utils import log
 cookieFile = os.path.join(control.dataPath, 'finecastcookie.lwp')
 
 def resolve(url):
-    try:
+    #try:
         try:
             referer = urlparse.parse_qs(urlparse.urlparse(url).query)['referer'][0]
         except:
@@ -33,8 +33,8 @@ def resolve(url):
         return rtmp
 
         
-    except:
-        return
+    #except:
+    #    return
 
 
 def get_cj():

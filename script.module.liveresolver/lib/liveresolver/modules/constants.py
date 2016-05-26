@@ -18,7 +18,7 @@ resolver_dict={ 'sawlive.tv': 'sawlive',
             'finecast.tv' : 'finecast',
             'filmon.com' : 'filmon',
             'miplayer.net' : 'miplayer',
-            'lshstream.com' : 'lshunter',
+            'lshstreams.com' : 'lshunter',
             'cdn.lshstream.com' : 'lshunter',
             'castamp.com' : 'castamp',
             'yocast.tv': 'yocast',
@@ -108,5 +108,6 @@ resolver_dict={ 'sawlive.tv': 'sawlive',
             'bro.adcast.tech' : 'broadcast',
             'sportstream365.com':'sportstream365',
             'navixsport.com' : 'navix',
-            'cndhlsstream.pw' : 'cndhls'
+            'cndhlsstream.pw' : 'cndhls',
+            'streamifyplayer.com' : 'streamify'
               }

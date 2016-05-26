@@ -11,7 +11,6 @@ def resolve(url):
         id = urlparse.parse_qs(urlparse.urlparse(url).query)['channel'][0]
         token_url = 'http://www.letgo.tv/securetoken.php?id=%s'%id
         result = client.request(token_url, referer = referer)
-        print(result)
         rtmp = re.findall('.*rtmp":"([^"]+)"',result)[0]
         file = re.findall('"streamname":"([^"]+)"',result)[0]
         token = re.findall('"token":"([^"]+).*',result)[0]

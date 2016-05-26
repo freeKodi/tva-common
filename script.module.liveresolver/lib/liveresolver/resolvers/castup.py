@@ -10,7 +10,6 @@ def resolve(url):
         try: referer = urlparse.parse_qs(urlparse.urlparse(url).query)['referer'][0]
         except: referer = url
         result = client.request(url, referer=referer)
-        print(result)
         json_url = re.compile('\$.getJSON\("(.+?)", function\(json\){').findall(result)[0]
         token = re.compile("\('token', '(.+?)'\);").findall(result)[0]
         data = json.loads(client.request(json_url))

@@ -113,7 +113,6 @@ def find_link(url, html=''):
             r = s.get(url,headers=headers)
             html = r.text
 
-
     ref=url
     fs=list(globals().copy())
     for f in fs:
@@ -132,7 +131,9 @@ def finder1(html,url):
     limit+=1
     ref=url
     try:
-        urls = re.findall('<i?frame.+?src=(?:\'|\")(.+?)(?:\'|\")',html,flags=re.IGNORECASE)
+        urls = re.findall('<i?frame\s*.+?src=(?:\'|\")(.+?)(?:\'|\")',html,flags=re.IGNORECASE)
+        urly = client.parseDOM(html, "iframe", ret="src")
+        urls += urly
         try:
             urls.append(re.findall("playStream\('iframe', '(.+?)'\)",html)[0])
         except: pass
@@ -141,12 +142,16 @@ def finder1(html,url):
         urls += re.findall('(http://www.hdmyt.info/(?:channel|player).php\?file=[^"\']+)["\']',html) 
         from random import shuffle
         for url in urls:
+            url = url.replace('https','http')
             if 'c4.zedo' in url or 'ProtectFile.File' in url or 'adServe' in url or 'facebook' in url or 'banner' in url:
                 continue
 
-            if "micast" in url or 'turbocast' in url:
+            elif "micast" in url or 'turbocast' in url:
                 return finder47(html,ref)
-                    
+                
+            elif 'lshstream' in url:
+                return finder2(url,url)    
+
             rr = resolve_it(url)
             if rr:
                 return rr
@@ -170,14 +175,14 @@ def finder1(html,url):
 #lsh stream
 def finder2(html,url):
     try:
-        reg = re.compile('[\"\'](http://www.lshstream.com[^\"\']+)')
+        reg = re.compile('(http://(?:www.)?lshstream.com[^\"\']+)')
         url = re.findall(reg,html)[0]
         return url
     except:
         try:
-            reg = re.compile('fid=[\"\'](.+?)[\"\'].+?lshstream.com/embed.js')
+            reg = re.compile('fid=[\"\'](.+?)[\"\'].+?lshstream.+?.com/embed.js')
             fid = re.findall(reg,html)[0]
-            url = 'http://www.lshstream.com/embed.php?u=%s&vw=720&vh=420&live.realstreamunited.com=%s'%(fid,url)
+            url = 'http://www.lshstreams.com/embed.php?u=%s&vw=720&vh=420&live.realstreamunited.com=%s'%(fid,url)
             return url
         except:
             return
@@ -196,18 +201,16 @@ def finder3(html,url):
 def finder4(html,url):
     ref = url
     try:
-        try:
-            link = re.compile('file\s*:\s*"(.+?)"').findall(html)[0]
-        except:
-            link = re.compile("file\s*:\s*'(.+?)'").findall(html)[0]
-        if '.png' in link or link == '.flv':
-            return
-        if '.f4m' in link:
-            link = link+'?referer=%s'%url
-        if '.m3u8' in link and '|' not in link:
-            link += '|%s' % urllib.urlencode({'User-Agent': client.agent(), 'Referer': ref, 'X-Requested-With':constants.get_shockwave(), 'Host':urlparse.urlparse(link).netloc, 'Connection':'keep-alive','Accept':'*/*'})
-        
-        return link
+        links = re.compile('file\s*:\s*[\"\']([^\"\']+)[\"\']').findall(html)
+        for link in links:
+            if '.png' in link or link == '.flv':
+                continue
+            if '.f4m' in link:
+                link = link+'?referer=%s'%url
+            if '.m3u8' in link and '|' not in link:
+                link += '|%s' % urllib.urlencode({'User-Agent': client.agent(), 'Referer': ref, 'X-Requested-With':constants.get_shockwave(), 'Host':urlparse.urlparse(link).netloc, 'Connection':'keep-alive','Accept':'*/*'})
+            
+            return link
     except:
         return 
 
@@ -1366,5 +1369,32 @@ def finder122(html,ref):
         except:
             url = re.findall('top.location.href\s*=\s*[\'\"]([^\'\"]+)[\'\"]',html)[1]
         return find_link(url)
+    except:
+        return
+
+#m3u8
+def finder123(html,ref):
+    try:
+        url = re.findall('[\'\"](.+?.m3u8)[\'\"]',html)[0]
+        return url
+    except:
+        return
+
+#streamify
+def finder124(html,url):
+    try:
+        ref=url
+        id = re.findall("channel=[\"\']([^\"\']+)[\"\'].+?src.+?streamifyplayer.com.+?.js",html)[0]
+        url = 'http://www.streamifyplayer.com/embedplayer/%s/1/620/430?referer=%s'%(id,ref)
+        return url
+    except:
+        return
+
+#youtube live
+def finder125(html,url):
+    try:
+        if 'youtube-live' in html:
+            url = re.findall("(https?://(?:www.)?youtube.com/[^\"\']+)",html)[0]
+            return url
     except:
         return

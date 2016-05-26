@@ -6,7 +6,7 @@ from liveresolver.modules import client,constants,liveresolver_utils
 from liveresolver.modules.log_utils import log
 import requests
 def resolve(url):
-    #try:
+    try:
         s = requests.Session()
         try:
             referer = urlparse.parse_qs(urlparse.urlparse(url).query)['referer'][0]
@@ -24,6 +24,6 @@ def resolve(url):
         return url
 
     
-    #except:
-    #    return
+    except:
+        return
 

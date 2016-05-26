@@ -86,3 +86,40 @@ def add_args(url, arg_dict):
 
 
 
+def replace_vars(text):
+    vars = re.findall('\s*(\w+)\s*=\s*[\'\"](.+?)[\'\"]',text)
+
+    #remove var from string
+    for v in vars:
+        text = re.sub('var\s*%s=\s*[\"\']%s[\"\']'%(v[0],v[1]),'',text)
+
+
+    var_dict = {}
+    for v in vars:
+        var_dict[v[0]] = v[1]
+    #replace var with values
+    for v in vars:
+        text = text.replace(v[0],'"%s"'%v[1])
+
+    for v in vars:
+        if '+' in v[1]:
+            ss = v[1].rstrip('+').replace('"+','').split('+')
+            sg = v[1].rstrip('+').replace('"+','')
+            for s in ss:
+                try:
+                    sg = sg.replace(s, var_dict[s])
+                except:
+                    pass
+            
+                var_dict[v[0]]=sg.replace('+','')
+        
+
+    for i in range(100):
+        for v in vars: text = text.replace(" %s " % v[0], ' %s '%var_dict[v[0]])
+    
+    for i in range(100):
+        for v in var_dict.keys(): text = text.replace("'%s'" % v, var_dict[v])
+        for v in var_dict.keys(): text = text.replace("(%s)" % v, "(%s)" % var_dict[v])
+
+
+    return text
