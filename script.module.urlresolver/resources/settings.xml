@@ -369,11 +369,15 @@
 		<setting label="vidup" type="lsep"/>
 		<setting id="VidUpResolver_priority" type="number" label="Priority" default="100"/>
 		<setting id="VidUpResolver_enabled" type="bool" label="Enabled" default="true"/>
-		<setting label="vidzi" type="lsep"/>
-		<setting id="VidziResolver_priority" type="number" label="Priority" default="100"/>
-		<setting id="VidziResolver_enabled" type="bool" label="Enabled" default="true"/>
+		<setting label="vidup" type="lsep"/>
+		<setting id="VidUpMeResolver_priority" type="number" label="Priority" default="100"/>
+		<setting id="VidUpMeResolver_enabled" type="bool" label="Enabled" default="true"/>
 	</category>
 	<category label="Resolvers 5">
+		<setting label="vimeo" type="lsep"/>
+		<setting id="VimeoResolver_priority" type="number" label="Priority" default="100"/>
+		<setting id="VimeoResolver_enabled" type="bool" label="Enabled" default="true"/>
+		<setting label="Video Quality" id="VimeoResolver_quality" type="enum" values="High|Medium|Low" default="0" />
 		<setting label="vivosx" type="lsep"/>
 		<setting id="VivosxResolver_priority" type="number" label="Priority" default="100"/>
 		<setting id="VivosxResolver_enabled" type="bool" label="Enabled" default="true"/>
