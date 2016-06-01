@@ -20,53 +20,52 @@
 """
 
 import re
-import json
 import urllib
+import HTMLParser
 from lib import helpers
 from urlresolver import common
 from urlresolver.resolver import UrlResolver, ResolverError
 
-class MailRuResolver(UrlResolver):
-    name = "mail.ru"
-    domains = ['mail.ru', 'my.mail.ru', 'videoapi.my.mail.ru', 'api.video.mail.ru']
-    pattern = '(?://|\.)(mail\.ru)/.+?/(inbox|mail)/(.+?)/.+?/(\d*)\.html'
+class RuTubeResolver(UrlResolver):
+    name = "rutube.ru"
+    domains = ['rutube.ru']
+    pattern = '(?://|\.)(rutube\.ru)/play/embed/(\d*)'
 
     def __init__(self):
         self.net = common.Net()
 
     def get_media_url(self, host, media_id):
         web_url = self.get_url(host, media_id)
+
         response = self.net.http_GET(web_url)
+
         html = response.content
 
         if html:
-            try:
-                js_data = json.loads(html)
-                headers = dict(response._response.info().items())
-                cookie = ''
-                if 'set-cookie' in headers: cookie = '|' + urllib.urlencode({'Cookie': headers['set-cookie']})
+            m3u8 = re.compile('video_balancer&quot;:\s*{.*?&quot;m3u8&quot;:\s*&quot;(.*?)&quot;}').findall(html)[0]
+            m3u8 = HTMLParser.HTMLParser().unescape(m3u8)
+            response = self.net.http_GET(m3u8)
+            m3u8 = response.content
+            
+            sources = re.compile('\n(.+?i=(.+?))\n').findall(m3u8)
+            sources = sources[::-1]
+            sources = [sublist[::-1] for sublist in sources]
+            
+            source = helpers.pick_source(sources, self.get_setting('auto_pick') == 'true')
+            source = source.encode('utf-8')
 
-                sources = [('%s' % video['key'], '%s%s' % (video['url'], cookie)) for video in js_data['videos']]
-                sources = sources[::-1]
-                source = helpers.pick_source(sources, self.get_setting('auto_pick') == 'true')
-                source = source.encode('utf-8')
-
+            if source:
                 return source
-                
-            except:
-                raise ResolverError('No playable video found.')
 
-        else: 
-            raise ResolverError('No playable video found.')
+        raise ResolverError('No playable video found.')
 
     def get_url(self, host, media_id):
-        location, user, media_id = media_id.split('|')
-        return 'http://videoapi.my.mail.ru/videos/%s/%s/_myvideo/%s.json?ver=0.2.60' % (location, user, media_id)
+        return 'http://rutube.ru/play/embed/%s' % media_id
 
     def get_host_and_id(self, url):
         r = re.search(self.pattern, url)
         if r:
-            return (r.groups()[0], '%s|%s|%s' % (r.groups()[1], r.groups()[2], r.groups()[3]))
+            return r.groups()
         else:
             return False
 
