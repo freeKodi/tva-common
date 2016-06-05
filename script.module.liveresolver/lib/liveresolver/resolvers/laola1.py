@@ -7,9 +7,11 @@ from liveresolver.modules.log_utils import log
 def resolve(url):
     try:
         
-        
-        result = client.request(url)
-        rr = 'http://www.laola1.tv' + re.findall('(\/titanplayer.php\?videoid=[^\"\']+)',result)[0]
+        if 'player' not in url:
+            result = client.request(url)
+            rr = 'http://www.laola1.tv' + re.findall('(\/titanplayer.php\?videoid=[^\"\']+)',result)[0]
+        else:
+            rr = url
         result = client.request(rr)   
         streamid = re.compile('streamid: "(.+?)"', re.DOTALL).findall(result)[0]
         partnerid = re.compile('partnerid: "(.+?)"', re.DOTALL).findall(result)[0]

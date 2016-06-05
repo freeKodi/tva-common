@@ -1,9 +1,9 @@
 
 def flash_ver():
-      return 'WIN\\2021,0,0,182'
+      return 'WIN\\2021,0,0,242'
 
 def get_shockwave():
-      return 'ShockwaveFlash/21.0.0.182'
+      return 'ShockwaveFlash/21.0.0.242'
       
 def blacklist():
       black = ['advert', 'banner', 'bet', 'c4.zedo', 'chat', 'chatango', '.css', 'histats']
@@ -45,7 +45,7 @@ resolver_dict={ 'sawlive.tv': 'sawlive',
             'p3g.tv' : 'p3g',
             'liveflashplayer.net' : 'liveflashplayer',
             'laola1.tv' : 'laola1',
-            'ehftv.com' : 'ehftv',
+            'ehftv.com' : 'laola1',
             'zoomtv.me' : 'zoomtv',#not implemented
             'iguide.to' : 'iguide',
             'letgo.tv' : 'letgo',
@@ -109,5 +109,6 @@ resolver_dict={ 'sawlive.tv': 'sawlive',
             'sportstream365.com':'sportstream365',
             'navixsport.com' : 'navix',
             'cndhlsstream.pw' : 'cndhls',
-            'streamifyplayer.com' : 'streamify'
+            'streamifyplayer.com' : 'streamify',
+            'zoptv.com' : 'zoptv'
               }

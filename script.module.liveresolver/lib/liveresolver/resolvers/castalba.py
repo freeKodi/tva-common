@@ -26,11 +26,10 @@ def resolve(url):
         var = re.compile('var\s(.+?)\s*=\s*[\'\"](.+?)[\'\"]').findall(result)
         var_dict = dict(var)
 
-
         if 'm3u8' in result:
             url = re.compile('file.+?\s*=\s*(?:unescape\()[\'\"](.+?)[\'\"]').findall(result)[0]
             url = 'http://' + url + '.m3u8'
-            url += '|%s' % urllib.urlencode({'User-Agent': client.agent(), 'Referer': referer})
+            url += '|%s' % urllib.urlencode({'User-Agent': client.agent(), 'Referer': url,'X-Requested-With':constants.get_shockwave()})
             log("Castalba: Found m3u8 url: " + url)
             
         else:
@@ -45,13 +44,18 @@ def resolve(url):
                 except:
                     filePath = file
             swf = re.compile("'flashplayer'\s*:\s*\"(.+?)\"").findall(result)[0]
-            strm_func = result
-            strm_func = re.sub('\s//[^;]+','',strm_func)
+            
 
-           
-            streamer = 'rtmp://' +  re.findall('[\"\']([\d\.]+\/live).*',strm_func)[0]
+            sm = re.findall("'streamer':(.+?),",result)[0]
+            strm_funcs = re.findall('function\s*(.+?)\s*\{([^\}]+)',result,flags=re.DOTALL)
+            for f in strm_funcs:
+                if '%s'%f[0] in sm:
+                    strm_func = f[1]
+                    break
+            strm_func = re.sub('\s//[^;]+','',strm_func)
+            streamer = 'rtmp://' +  re.findall('.*["\'/](\d{1,3}\.\d{1,3}\.\d{1,3}\.[^"\'/]+)["\'/]',strm_func)[0] + '/live'
             streamer = streamer.replace('///','//')
-            url = streamer  + ' playpath=' + filePath +' swfUrl=' + swf + ' flashver=' + constants.flash_ver() +' live=true timeout=15 swfVfy=1 pageUrl=' + pageUrl
+            url = streamer  + ' playpath=' + filePath +' swfUrl=' + swf + ' flashver=' + constants.flash_ver() +' live=true timeout=15 swfVfy=true pageUrl=' + pageUrl
             log("Castalba: Found rtmp link: " + url)
 
         return url

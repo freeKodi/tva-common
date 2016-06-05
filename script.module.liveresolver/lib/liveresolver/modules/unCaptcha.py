@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import client
 import random
 import re
 import time
@@ -196,7 +196,7 @@ def getUrl(url, cookieJar=None,post=None, timeout=20, headers=None, noredir=Fals
         opener = urllib2.build_opener(cookie_handler, urllib2.HTTPBasicAuthHandler(), urllib2.HTTPHandler())
     #opener = urllib2.install_opener(opener)
     req = urllib2.Request(url)
-    req.add_header('User-Agent','Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.154 Safari/537.36')
+    req.add_header('User-Agent',client.agent())
     if headers:
         for h,hv in headers:
             req.add_header(h,hv)
@@ -209,7 +209,7 @@ def getUrl(url, cookieJar=None,post=None, timeout=20, headers=None, noredir=Fals
 class UnCaptchaReCaptcha:
     def processCaptcha(self, key,lang):
         
-        headers=[("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:37.0) Gecko/20100101 Firefox/37.0"),
+        headers=[("User-Agent", client.agent()),
                  ("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"),
                 ("Referer", "https://www.google.com/recaptcha/api2/demo"),
                  ("Accept-Language", lang)];
@@ -239,7 +239,7 @@ class UnCaptchaReCaptcha:
 
             imgurl=re.findall("name=\"c\"\\s+value=\\s*\"([^\"]+)",html)[0]
 
-            headers=[("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:37.0) Gecko/20100101 Firefox/37.0"),
+            headers=[("User-Agent", client.agent()),
                  ("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"),
                  ("Referer", "http://www.google.com/recaptcha/api/fallback?k=" + key),
                  ("Accept-Language", lang)];
@@ -279,7 +279,7 @@ def performCaptcha(sitename,cj,returnpage=True,captcharegex='data-sitekey="(.*?)
         token=c.processCaptcha(sitekey[0],lang)
         if returnpage:
             if headers==None:
-                headers=[("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:37.0) Gecko/20100101 Firefox/37.0"),
+                headers=[("User-Agent", client.agent()),
                  ("Referer", sitename)];
             else:
                 headers+=[("Referer", sitename)]

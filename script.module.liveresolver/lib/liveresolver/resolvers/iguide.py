@@ -15,9 +15,12 @@ def resolve(url):
         except:
             channel = re.compile('/embed/(\d+)&').findall(url)[0]
 
-        page = 'http://www.iguide.to/embedplayer.php?width=720&height=480&channel=%s&autoplay=true' % channel
-        print('x',page)
-        result = client.request(page, referer=referer)
+
+        page = 'http://www.iguide.to/embedplayer_new.php?width=700&height=410&channel=%s&autoplay=true' % channel
+        
+        log(page)
+        headers = {'Host':'www.iguide.to','Connection':'keep-alive'}
+        result = client.request(page, referer=referer,headers = headers)
         log(result)
         token_url =re.compile('\$.getJSON\("(.+?)", function\(json\){').findall(result)[0]
         token = json.loads(client.request(token_url, referer=referer))['token']

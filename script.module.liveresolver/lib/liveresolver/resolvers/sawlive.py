@@ -20,7 +20,7 @@ def resolve(url):
         headers={'User-Agent': client.agent(),'Host': host, 'Referer': referer, 'Connection': 'keep-alive'}
 
         result = client.request(page, referer=referer, headers = headers)
-
+        
         unpacked = ''
         packed = result.split('\n')
         for i in packed:
@@ -29,18 +29,20 @@ def resolve(url):
             except:
                 pass
         result += unpacked
-        aaa = result
-
-        aaa = aaa.replace('var ','')
-        aaa = aaa.replace('document.write(','result =').replace('\');','\'')
-        aaa = re.sub('function.+?\(\)[^}]+}\s*','',aaa)
-        aaa = aaa.replace('width=\"\'+swidth+\'" height="\'+sheight+\'"','')
-        aaa = re.sub('result =(.+?)\);',r'result =\1;',aaa)
-        exec(aaa)
+        result = decryptionUtils.doDemystify(result)
+        
         result = urllib.unquote_plus(result)
-        url = client.parseDOM(result, 'iframe', ret='src')[-1]
-        
-        
+        try:
+            url = client.parseDOM(result, 'iframe', ret='src')[-1]
+        except:
+            result = unpacked
+            url = client.parseDOM(result, 'iframe', ret='src')[-1]
+            var = re.compile('var\s(.+?)\s*=\s*[\'\"](.+?)[\'\"]').findall(result)
+            var_dict = dict(var)       
+         
+            for v in var_dict.keys():
+                url = url.replace(v,var_dict[v])
+            url = url.replace('\'','').replace('\"','').replace('+','').replace(' ','')
 
         result = client.request(url, headers = headers)
         unpacked = ''
