@@ -1,6 +1,9 @@
-# -*- coding: UTF-8 -*-
 """
-    Copyright (C) 2015  tknorris
+    OVERALL CREDIT TO:
+        t0mm0, Eldorado, VOINAGE, BSTRDMKR, tknorris, smokdpi, TheHighway
+
+    urlresolver XBMC Addon
+    Copyright (C) 2011 t0mm0
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,41 +20,34 @@
 """
 
 import re
-import xml.etree.ElementTree as ET
 from urlresolver import common
 from urlresolver.resolver import UrlResolver, ResolverError
 
-class MediaPlayBoxResolver(UrlResolver):
-    name = "MediaPlayBox"
-    domains = ["mediaplaybox.com"]
-    pattern = '(?://|\.)(mediaplaybox\.com)/video/(.*)'
+class WatchersResolver(UrlResolver):
+    name = "watchers.to"
+    domains = ['watchers.to']
+    pattern = '(?://|\.)(watchers\.to)/embed-([a-zA-Z0-9]+)'
 
     def __init__(self):
         self.net = common.Net()
-        self.net.set_user_agent(common.IE_USER_AGENT)
-        self.headers = {'User-Agent': common.IE_USER_AGENT}
 
     def get_media_url(self, host, media_id):
         web_url = self.get_url(host, media_id)
-        html = self.net.http_GET(web_url).content
-        patterns = [
-            'property="og:video"\s+content="[^"]+\?f=([^"]+)',
-            'itemprop="embedURL"\s+content="[^"]+\?f=([^"]+)',
-            '<embed[^>]+src="[^"]+\?f=([^"]+)'
-        ]
-        for pattern in patterns:
-            match = re.search(pattern, html)
-            if match:
-                xml = self.net.http_GET(match.group(1)).content
-                root = ET.fromstring(xml)
-                result = root.find('./video/src')
-                if result is not None:
-                    return result.text
+        response = self.net.http_GET(web_url)
+        html = response.content
 
-        raise ResolverError('Unable to find mediaplaybox video')
+        if html:
+            ip_loc = re.search('<img src="http://([\d.]+)/.+?"', html).groups()[0]
+            id_media = re.search('([a-zA-Z0-9]+)(?=\|+?download)', html).groups()[0]
+            m3u8 = 'http://%s/hls/%s/index-v1-a1.m3u8' % (ip_loc, id_media)
+
+            if m3u8:
+                return m3u8
+
+        raise ResolverError('No playable video found.')
 
     def get_url(self, host, media_id):
-        return 'http://mediaplaybox.com/video/%s' % media_id
+        return 'http://%s/embed-%s.html' % (host, media_id)
 
     def get_host_and_id(self, url):
         r = re.search(self.pattern, url)
@@ -62,3 +58,4 @@ class MediaPlayBoxResolver(UrlResolver):
 
     def valid_url(self, url, host):
         return re.search(self.pattern, url) or self.name in host
+        
