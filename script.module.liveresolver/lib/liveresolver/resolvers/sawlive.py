@@ -32,19 +32,40 @@ def resolve(url):
         result = decryptionUtils.doDemystify(result)
         
         result = urllib.unquote_plus(result)
+        r2 = result
+        resul = None
         try:
             url = client.parseDOM(result, 'iframe', ret='src')[-1]
         except:
             result = unpacked
-            url = client.parseDOM(result, 'iframe', ret='src')[-1]
-            var = re.compile('var\s(.+?)\s*=\s*[\'\"](.+?)[\'\"]').findall(result)
-            var_dict = dict(var)       
-         
-            for v in var_dict.keys():
-                url = url.replace(v,var_dict[v])
-            url = url.replace('\'','').replace('\"','').replace('+','').replace(' ','')
+            try:
+                url = client.parseDOM(result, 'iframe', ret='src')[-1]
+                var = re.compile('var\s(.+?)\s*=\s*[\'\"](.+?)[\'\"]').findall(result)
+                var_dict = dict(var)       
+                
+                for v in var_dict.keys():
+                    url = url.replace(v,var_dict[v])
+                url = url.replace('\'','').replace('\"','').replace('+','').replace(' ','')
+                resul = client.request(url, headers = headers)
+            except:
+                pass
+        
+        if resul is None:
+            aaa = r2.replace('var ','').replace('\' ','\' +').replace(' \'','+ \'')
 
-        result = client.request(url, headers = headers)
+            aaa = aaa.replace('document.write(','result =').replace('\');','\'')
+            aaa = re.sub('function.+?\(\)[^}]+}\s*','',aaa)
+            aaa = re.sub('=([^\'\"\s]+)\s*([^\'\";]+);',r'=\1+\2;',aaa)
+            aaa = aaa.replace('"\' +swidth+ \'"','')
+            aaa = aaa.replace('"\' +sheight+ \'"','')
+            aaa = re.sub('([^+])\s([^+])',r'\1+\2',aaa)
+            
+            exec(aaa)
+            result = urllib.unquote_plus(result)
+            url = client.parseDOM(result, 'iframe', ret='src')[-1]
+            result = client.request(url, headers = headers)
+        else:
+            result = resul
         unpacked = ''
         packed = result.split('\n')
         for i in packed:

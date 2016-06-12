@@ -35,7 +35,16 @@ def resolve(url):
 
         headers = {'X-Requested-With': 'XMLHttpRequest'}
 
-        result = client.request(url, headers=headers)
+        cookie = client.request(url, output='cookie')
+
+        cid = client.request(url, headers=headers)
+        cid = json.loads(cid)['id']
+
+        headers = {'X-Requested-With': 'XMLHttpRequest', 'Referer': url}
+
+        url = 'http://www.filmon.com/ajax/getChannelInfo?channel_id=%s' % cid
+
+        result = client.request(url, mobile=True, cookie=cookie, headers=headers)
         result = json.loads(result)
 
         try:
@@ -44,15 +53,10 @@ def resolve(url):
             result = result['data']['streams']
             result = [i[1] for i in result.iteritems()]
 
-        strm = [(i['url'], int(i['watch-timeout'])) for i in result]
-        strm = [i for i in strm if '.m3u8' in i[0]]
-        strm.sort()
-        strm = strm[-1][0]
-
-        url = client.request(strm).splitlines()
-        url = [i for i in url if '.m3u8' in i]
-        if len(url) == 0: return strm
-        url = urlparse.urljoin(strm, url[0])
+        url = [(i['url'], int(i['watch-timeout'])) for i in result]
+        url = [i for i in url if '.m3u8' in i[0]]
+        url.sort()
+        url = url[-1][0]
 
         return url
     except:

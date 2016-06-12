@@ -13,16 +13,16 @@ def encryptDES_ECB(data, key):
     return d
 
 def gAesDec(data, key):
-    import mycrypt
-    return mycrypt.decrypt(key,data)
+    from mycrypt import decrypt
+    return decrypt(key,data)
 
 def cjsAesDec(data, key):
-    try: import simplejson as json
-    except ImportError: import json
-    import mycrypt
+    try: import json
+    except ImportError: import simplejson as json
+    from mycrypt import decrypt
     enc_data = json.loads(data.decode('base-64'))
     ciphertext = 'Salted__' + enc_data['s'].decode('hex') + enc_data['ct'].decode('base-64')
-    return json.loads(mycrypt.decrypt(key,ciphertext.encode('base-64')))
+    return json.loads(decrypt(key,ciphertext.encode('base-64')))
 
 def wdecode(data):
     from itertools import chain
@@ -182,15 +182,26 @@ def doDemystify(data):
         if gs:
             for g in gs:
                 data = data.replace(g, jsF.ew_dc(g))
-
-    # pbbfa0
+                
+     # pbbfa0
     if 'function pbbfa0(' in data:
         r = re.compile("pbbfa0\(''\).*?'(.+?)'.\+.unescape")
         gs = r.findall(data)
         if gs:
             for g in gs:
                 data = data.replace(g, jsF.pbbfa0(g))
-
+    
+    if 'eval(function(' in data:
+        data = re.sub(r"""function\(\w\w\w,\w\w\w,\w\w\w,\w\w\w\)""",'function(p,a,c,k)',data)
+        data = re.sub(r"""\(\w\w\w\+0\)%\w\w\w""",'e%a',data)
+        data = re.sub(r"""RegExp\(\w\w\w\(\w\w\w\)""",'RegExp(e(c)',data)
+        
+    if """.replace(""" in data:
+        r = re.compile(r""".replace\(["']([^"']+)["'],\s*["']([^"']*)["']\)""")
+        gs = r.findall(data)
+        if gs:
+            for g in gs:
+                data = data.replace(g[0],g[1])
 
     # util.de
     if 'Util.de' in data:

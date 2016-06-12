@@ -23,7 +23,7 @@ FLASH = constants.flash_ver()
     of requesting the given url and searching from there.
 '''
 def resolve(url, cache_timeout=3, html=None, title='Video'):
-    try:
+    #try:
         log("Resolver called with url: " + url)
         resolved=None
         if html==None:
@@ -40,10 +40,10 @@ def resolve(url, cache_timeout=3, html=None, title='Video'):
                 resolved=url
         log("Resolved url: " + resolved)
         return resolved
-    except:
-        log("Failed to find link.")
+    #except:
+    #    log("Failed to find link.")
 
-        return url
+    #    return url
 
 
 '''
@@ -133,6 +133,10 @@ def finder1(html,url):
     try:
         urls = re.findall('<i?frame\s*.+?src=(?:\'|\")(.+?)(?:\'|\")',html,flags=re.IGNORECASE)
         urly = client.parseDOM(html, "iframe", ret="src")
+        urlc = re.findall('top.location.href\s*=\s*[\'\"](.+?axe-tv[^\'\"]+)[\'\"]',html)
+        for url in urlc:
+            if 'sky-sports-1' not in url and 'fox1ushd' not in url:
+                urls.append(url)
         urls += urly
         try:
             urls.append(re.findall("playStream\('iframe', '(.+?)'\)",html)[0])
@@ -695,7 +699,7 @@ def finder49(html,url):
 def finder50(html,url):
     try:
         ref=url
-        id = re.findall("id=(?:\'|\")(.+?)(?:\'|\");.+?src=(?:\'|\")http://sostart.([^/]+)/.+?.js(?:\'|\")>",html)[0]
+        id = re.findall("id=(?:\'|\")(.+?)(?:\'|\");.+?src=(?:\'|\")http://.+?sostart.([^/]+)/.+?.js(?:\'|\")>",html)[0]
         url = 'http://sostart.%s/stream.php?id=%s&width=630&height=450&referer=%s'%(id[1],id[0],ref)
         return url
     except:
@@ -1294,7 +1298,7 @@ def finder115(html,ref):
     
     try:
         id = re.findall('id=[\"\'](.+?)[\"\'].+?src=[\"\'].+?bro.adca.st/.+?.js',html)[0]
-        url = 'http://bro.adcast.tech/stream.php?id='+id+'&width=640&height=460&referer=' + ref + '&stretching=uniform'
+        url = 'http://bro.adca.st/stream.php?id='+id+'&width=640&height=460&referer=' + ref + '&stretching=uniform'
         return url
     except:
         return
@@ -1361,16 +1365,7 @@ def finder121(html,url):
     except:
         return
 
-#weird redirect
-def finder122(html,ref):
-    try:
-        try:
-            url = re.findall('top.location.href\s*=\s*[\'\"]([^\'\"]+)[\'\"]',html)[1]
-        except:
-            url = re.findall('top.location.href\s*=\s*[\'\"]([^\'\"]+)[\'\"]',html)[1]
-        return find_link(url)
-    except:
-        return
+
 
 #m3u8
 def finder123(html,ref):
