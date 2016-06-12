@@ -20,13 +20,14 @@
 """
 
 import re
+from lib import helpers
 from urlresolver import common
 from urlresolver.resolver import UrlResolver, ResolverError
 
-class WatchersResolver(UrlResolver):
-    name = "watchers"
-    domains = ['watchers.to']
-    pattern = '(?://|\.)(watchers\.to)/(?:embed-)?([a-zA-Z0-9]+)'
+class VideoRevResolver(UrlResolver):
+    name = "videorev"
+    domains = ['videorev.cc']
+    pattern = '(?://|\.)(videorev\.cc)/([a-zA-Z0-9]+)\.html'
 
     def __init__(self):
         self.net = common.Net()
@@ -37,17 +38,32 @@ class WatchersResolver(UrlResolver):
         html = response.content
 
         if html:
-            ip_loc = re.search('<img src="http://([\d.]+)/.+?"', html).groups()[0]
-            id_media = re.search('([a-zA-Z0-9]+)(?=\|+?download)', html).groups()[0]
-            m3u8 = 'http://%s/hls/%s/index-v1-a1.m3u8' % (ip_loc, id_media)
+            smil_id = re.search('([a-zA-Z0-9]+)(?=\|smil)', html).groups()[0]
+            smil_url = 'http://%s/%s.smil' % (host, smil_id)
+            result = self.net.http_GET(smil_url).content
+            
+            base = re.search('base="(.+?)"', result).groups()[0]
+            srcs = re.findall('src="(.+?)"', result)
+            try:
+                res = re.findall('width="(.+?)"', result)
+            except:
+                res = res = re.findall('height="(.+?)"', result)
 
-            if m3u8:
-                return m3u8
+            i = 0
+            sources = []
+            for src in srcs:
+                sources.append([str(res[i]), '%s playpath=%s' % (base, src)])
+                i += 1
+                
+            source = helpers.pick_source(sources, self.get_setting('auto_pick') == 'true')
+            source = source.encode('utf-8')
+
+            return source
 
         raise ResolverError('No playable video found.')
 
     def get_url(self, host, media_id):
-        return 'http://%s/embed-%s.html' % (host, media_id)
+        return 'http://%s/%s.html' % (host, media_id)
 
     def get_host_and_id(self, url):
         r = re.search(self.pattern, url)
@@ -55,4 +71,10 @@ class WatchersResolver(UrlResolver):
             return r.groups()
         else:
             return False
-        
+
+    @classmethod
+    def get_settings_xml(cls):
+        xml = super(cls, cls).get_settings_xml()
+        xml.append('<setting id="%s_auto_pick" type="bool" label="Automatically pick best quality" default="false" visible="true"/>' % (cls.__name__))
+        return xml
+            

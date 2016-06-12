@@ -191,6 +191,7 @@
 		<setting label="openload" type="lsep"/>
 		<setting id="OpenLoadResolver_priority" type="number" label="Priority" default="100"/>
 		<setting id="OpenLoadResolver_enabled" type="bool" label="Enabled" default="true"/>
+		<setting id="OpenLoadResolver_auto_update" type="bool" label="Automatically update resolver" default="true"/>
 		<setting label="play44.net" type="lsep"/>
 		<setting id="Play44Resolver_priority" type="number" label="Priority" default="100"/>
 		<setting id="Play44Resolver_enabled" type="bool" label="Enabled" default="true"/>
@@ -210,6 +211,8 @@
 		<setting label="promptfile" type="lsep"/>
 		<setting id="PromptfileResolver_priority" type="number" label="Priority" default="100"/>
 		<setting id="PromptfileResolver_enabled" type="bool" label="Enabled" default="true"/>
+	</category>
+	<category label="Resolvers 3">
 		<setting label="purevid" type="lsep"/>
 		<setting id="PureVidResolver_priority" type="number" label="Priority" default="100"/>
 		<setting id="PureVidResolver_enabled" type="bool" label="Enabled" default="true"/>
@@ -218,8 +221,6 @@
 		<setting id="PureVidResolver_password" enable="eq(-2,true)" type="text" label="Password" option="hidden" default=""/>
 		<setting label="Video quality" id="PureVidResolver_quality" type="labelenum" values="FLV|Maximum" default="Maximum" />
 		<setting label="This plugin calls the Purevid urlresolver - change settings there." type="lsep" />
-	</category>
-	<category label="Resolvers 3">
 		<setting label="rapidvideo.ws" type="lsep"/>
 		<setting id="RapidVideoResolver_priority" type="number" label="Priority" default="100"/>
 		<setting id="RapidVideoResolver_enabled" type="bool" label="Enabled" default="true"/>
@@ -290,14 +291,14 @@
 		<setting label="uploadc" type="lsep"/>
 		<setting id="UploadcResolver_priority" type="number" label="Priority" default="100"/>
 		<setting id="UploadcResolver_enabled" type="bool" label="Enabled" default="true"/>
+	</category>
+	<category label="Resolvers 4">
 		<setting label="uploadx" type="lsep"/>
 		<setting id="UploadXResolver_priority" type="number" label="Priority" default="100"/>
 		<setting id="UploadXResolver_enabled" type="bool" label="Enabled" default="true"/>
 		<setting label="uptobox" type="lsep"/>
 		<setting id="UpToBoxResolver_priority" type="number" label="Priority" default="100"/>
 		<setting id="UpToBoxResolver_enabled" type="bool" label="Enabled" default="true"/>
-	</category>
-	<category label="Resolvers 4">
 		<setting label="userscloud" type="lsep"/>
 		<setting id="UsersCloudResolver_priority" type="number" label="Priority" default="100"/>
 		<setting id="UsersCloudResolver_enabled" type="bool" label="Enabled" default="true"/>
@@ -340,6 +341,10 @@
 		<setting label="videoraj.to" type="lsep"/>
 		<setting id="VideoRajResolver_priority" type="number" label="Priority" default="100"/>
 		<setting id="VideoRajResolver_enabled" type="bool" label="Enabled" default="true"/>
+		<setting label="videorev" type="lsep"/>
+		<setting id="VideoRevResolver_priority" type="number" label="Priority" default="100"/>
+		<setting id="VideoRevResolver_enabled" type="bool" label="Enabled" default="true"/>
+		<setting id="VideoRevResolver_auto_pick" type="bool" label="Automatically pick best quality" default="false" visible="true"/>
 		<setting label="videosky.to" type="lsep"/>
 		<setting id="VideoSkyResolver_priority" type="number" label="Priority" default="100"/>
 		<setting id="VideoSkyResolver_enabled" type="bool" label="Enabled" default="true"/>
@@ -365,6 +370,8 @@
 		<setting label="vidto" type="lsep"/>
 		<setting id="VidtoResolver_priority" type="number" label="Priority" default="100"/>
 		<setting id="VidtoResolver_enabled" type="bool" label="Enabled" default="true"/>
+	</category>
+	<category label="Resolvers 5">
 		<setting label="vidup.me" type="lsep"/>
 		<setting id="VidUpMeResolver_priority" type="number" label="Priority" default="100"/>
 		<setting id="VidUpMeResolver_enabled" type="bool" label="Enabled" default="true"/>
@@ -375,8 +382,6 @@
 		<setting id="VimeoResolver_priority" type="number" label="Priority" default="100"/>
 		<setting id="VimeoResolver_enabled" type="bool" label="Enabled" default="true"/>
 		<setting label="Video Quality" id="VimeoResolver_quality" type="enum" values="High|Medium|Low" default="0" />
-	</category>
-	<category label="Resolvers 5">
 		<setting label="vivosx" type="lsep"/>
 		<setting id="VivosxResolver_priority" type="number" label="Priority" default="100"/>
 		<setting id="VivosxResolver_enabled" type="bool" label="Enabled" default="true"/>
@@ -397,7 +402,7 @@
 		<setting label="vshare.eu" type="lsep"/>
 		<setting id="VshareEuResolver_priority" type="number" label="Priority" default="100"/>
 		<setting id="VshareEuResolver_enabled" type="bool" label="Enabled" default="true"/>
-		<setting label="watchers.to" type="lsep"/>
+		<setting label="watchers" type="lsep"/>
 		<setting id="WatchersResolver_priority" type="number" label="Priority" default="100"/>
 		<setting id="WatchersResolver_enabled" type="bool" label="Enabled" default="true"/>
 		<setting label="watchvideo" type="lsep"/>
