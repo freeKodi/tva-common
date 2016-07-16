@@ -1,26 +1,10 @@
 # -*- coding: utf-8 -*-
 
-'''
-    Genesis Add-on
-    Copyright (C) 2015 lambda
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-'''
 
 
 import re,urlparse,json
 from liveresolver.modules import client
+from liveresolver.modules.log_utils import log
 
 def resolve(url):
     try:
@@ -35,28 +19,32 @@ def resolve(url):
 
         headers = {'X-Requested-With': 'XMLHttpRequest'}
 
+        log('Filmon: Getting cookie...')
         cookie = client.request(url, output='cookie')
-
+        
+        log('Filmon: Getting channel id...')
         cid = client.request(url, headers=headers)
         cid = json.loads(cid)['id']
+        
 
         headers = {'X-Requested-With': 'XMLHttpRequest', 'Referer': url}
 
         url = 'http://www.filmon.com/ajax/getChannelInfo?channel_id=%s' % cid
 
-        result = client.request(url, mobile=True, cookie=cookie, headers=headers)
-        result = json.loads(result)
+        log('Filmon: Getting streams...')
+        result = client.request(url, cookie=cookie, headers=headers)
 
+        result = json.loads(result)
         try:
             result = result['streams']
         except:
             result = result['data']['streams']
-            result = [i[1] for i in result.iteritems()]
+            result = [i[1] for i in result.items()]
 
+        log('Filmon: Selecting stream url...')
         url = [(i['url'], int(i['watch-timeout'])) for i in result]
         url = [i for i in url if '.m3u8' in i[0]]
-        url.sort()
-        url = url[-1][0]
+        url = url[0][0]
 
         return url
     except:

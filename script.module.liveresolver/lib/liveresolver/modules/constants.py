@@ -85,6 +85,9 @@ resolver_dict={ 'sawlive.tv': 'sawlive',
 
             'streamcasttv.biz':'streamcasttv',
             'vaughnlive.tv' : 'vaughnlive',
+            'vapers.tv' : 'vaughnlive',
+            'breakers.tv' : 'vaughnlive',
+            'instagib.tv' : 'vaughnlive',
             'hdcast.org' : 'hdcast_org',
             'ustream.tv' : 'ustream',
             'cast4u.tv' : 'cast4u',
@@ -111,5 +114,8 @@ resolver_dict={ 'sawlive.tv': 'sawlive',
             'navixsport.com' : 'navix',
             'cndhlsstream.pw' : 'cndhls',
             'streamifyplayer.com' : 'streamify',
-            'zoptv.com' : 'zoptv'
+            'zoptv.com' : 'zoptv',
+            'streamp2p.com' : 'streamp2p',
+            'akamaistreaming.com' : 'akamaistreaming',
+            'cast3d.me' : 'dinozap'
               }

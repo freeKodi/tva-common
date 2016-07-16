@@ -22,8 +22,8 @@ FLASH = constants.flash_ver()
     html - pass html content to resolver and it will search for embedded links from it, instead 
     of requesting the given url and searching from there.
 '''
-def resolve(url, cache_timeout=3, html=None, title='Video'):
-    #try:
+def resolve(url, cache_timeout=3, html=None, title='Video',icon='x'):
+    try:
         log("Resolver called with url: " + url)
         resolved=None
         if html==None:
@@ -35,15 +35,15 @@ def resolve(url, cache_timeout=3, html=None, title='Video'):
             else:
                 url = find_link(url,html=html)
             resolved=url
-            url=resolve_it(url,title=title)
+            url=resolve_it(url,title=title,icon=icon)
             if url!=None:
                 resolved=url
         log("Resolved url: " + resolved)
         return resolved
-    #except:
-    #    log("Failed to find link.")
+    except:
+        log("Failed to find link.")
 
-    #    return url
+        return url
 
 
 '''
@@ -66,10 +66,12 @@ def delete_cache():
     Not intended for external use.
     This method is used internally for resolving the found link.
 '''
-def resolve_it(url, title='Video'):
+def resolve_it(url, title='Video',icon='x'):
     if '.m3u8' in url or 'rtmp:' in url or '.flv' in url or '.mp4' in url or '.ts' in url or url.startswith('plugin://'):
         if '.m3u8' in url and '|' not in url:
             url += '|%s' % urllib.urlencode({'User-Agent': client.agent()})
+        if '.ts' in url:
+            url = 'plugin://plugin.video.f4mTester/?name=%s&iconImage=%s&streamtype=TSDOWNLOADER&url='%(urllib.quote(title),urllib.quote(icon)) + urllib.quote(url)
         return url
 
     if '.f4m' in url:
@@ -101,18 +103,23 @@ def find_link(url, html=''):
     log('Finding in : %s'%url)
     try: referer = urlparse.parse_qs(urlparse.urlparse(url).query)['referer'][0]
     except: referer = 'http://' + urlparse.urlparse(url).netloc
+    url = manual_url_fix(url)
     host  = urlparse.urlparse(url).netloc
     headers = {'Referer':referer, 'Host':host, 'User-Agent' : client.agent(), 'Accept' : 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'Accept-Language' : 'en-US,en;q=0.5'}
     
     if html=='' or html is None:
-        url = manual_url_fix(url)
+
         html = client.request(url, headers=headers)
-        if 'livetvcdn' in url or 'shadow' in url or 'blog' in url and 'goto/' not in url:
+        ws = ['livetvcdn','shadow','blog']
+        if any(w in url for w in ws) and 'goto/' not in url :
+            
             import requests
             s = requests.Session()
-            r = s.get(url,headers=headers)
+            s.headers = headers
+            r = s.get(url)
             html = r.text
 
+    
     ref=url
     fs=list(globals().copy())
     for f in fs:
@@ -127,6 +134,9 @@ def find_link(url, html=''):
 
 #embeded iframes
 def finder1(html,url):
+    html = html.replace('/adplus/adplus.html?id=','')
+    try:html = urllib.unquote(html)
+    except:pass
     global limit
     limit+=1
     ref=url
@@ -468,7 +478,11 @@ def finder27(html,url):
 def finder28(html,url):
     try:
         ref=url
-        fid = re.findall('fid="(.+?)".+?</script><script type="text/javascript" src="http://zome.zoomtv.me/.+?.js',html)[0]
+        try:
+            fid = re.findall('fid="(.+?)".+?zome.zoomtv.me/.+?.js',html)[0]
+        except:
+            f = re.findall('fid=([^;]+)',html)[0]
+            fid = re.findall('%s\s*=\s*[\"\']([^\"\']+)'%f,html)[0]
         pid = re.findall('pid\s*=\s*(.+?);',html)[0]
         url = 'http://www.zoomtv.me/embed.php?v=' + fid + '&vw=660&vh=450&referer=%s&pid=%s'%(ref,pid)
         return url
@@ -730,7 +744,7 @@ def finder53(html,url):
 #jw rtmp
 def finder54(html,url):
     try:
-        rtmp = re.findall('jwplayer("player").setup({\s*file: "(rtmp://.+?)"',html)[0]
+        rtmp = re.findall('jwplayer.+?file.?\s*:\s*[\"\']((?:rtmp|http)?://[^\"\']+)[\"\']',html)[0]
         return rtmp
     except:
         return
@@ -921,7 +935,8 @@ def finder73(html,url):
 def finder74(html,url):
     try:
         ref = url
-        id = re.findall('fid="(.+?)";.+?src="http://www.cast4u.tv/.+?.js">',html)[0]
+
+        id = re.findall('id=[\'\"](.+?)[\'\"].+?src=[\'\"]http://www.cast4u.tv/.+?.js',html)[0]
         url = 'http://www.cast4u.tv/embed.php?live=%s&vw=620&vh=490&referer=%s'%(id,ref)
         return url
     except:
@@ -1019,7 +1034,7 @@ def finder83(html,url):
 def finder84(html,url):
     try:
         ref = url
-        url = re.findall('[\"\'](https?://(?:www\.)?serverhd.eu/channel\w+\.php\?file=[^"\']+)',html)[0]
+        url = re.findall('[\"\'](https?://(?:www\.)?(?:serverhd.eu|cast3d.me)/channel\w*\.php\?file=[^"\']+)',html)[0]
         return url + '&referer=' + ref
     except:
         return
@@ -1301,7 +1316,12 @@ def finder115(html,ref):
         url = 'http://bro.adca.st/stream.php?id='+id+'&width=640&height=460&referer=' + ref + '&stretching=uniform'
         return url
     except:
-        return
+        try:
+            url = re.findall('(http://bro.adca.st/stream.php[^\"\']+)',html)[0]
+            url = url + '&referer=' + ref
+            return url
+        except:
+            return
 
 #akamai rtmpe
 def finder116(html,ref):
@@ -1366,15 +1386,12 @@ def finder121(html,url):
         return
 
 
-
-#m3u8
 def finder123(html,ref):
     try:
-        url = re.findall('[\'\"](.+?.m3u8)[\'\"]',html)[0]
-        return url
+        url = re.findall('mpegurl.+?src=[\"\']([^\"\']+)[\"\']',html)[0]
+        return url + '|%s' % urllib.urlencode({'Referer':ref,'X-Requested-With':constants.get_shockwave(),'User-agent':client.agent()})
     except:
         return
-
 #streamify
 def finder124(html,url):
     try:
@@ -1391,5 +1408,45 @@ def finder125(html,url):
         if 'youtube-live' in html:
             url = re.findall("(https?://(?:www.)?youtube.com/[^\"\']+)",html)[0]
             return url
+    except:
+        return
+
+#streamp2p
+def finder126(html,url):
+    try:
+        url = re.findall('(http://(?:www.)?streamp2p.com[^\"\']+)[\"\']',html)[0]
+        return url
+    except:
+        return
+
+def finder127(html,url):
+    try:
+        
+        try:
+            html = urllib.unquote(html)
+        except:
+            pass
+        url = re.findall('src=(http.+?m3.+?[^&]+)&',html)[0]
+        if 'amis' in url:
+            url = url.strip() +'|User-Agent=Mozilla/5.0'
+
+        return url.strip()
+    except:
+        return
+
+#akamaistreaming
+def finder128(html,ref):
+    try:
+        id = re.findall("id=['\"](.+?)['\"].+?src=['\"].+?akamaistreaming.+?.js",html)[0]
+        url = 'http://akamaistreaming.com/zn.php?id=%s&width=640&height=385&referer=%s'%(id,ref)
+        return url
+    except:
+        return
+
+def finder129(html,ref):
+    try:
+        id = re.findall("id=['\"](.+?)['\"].+?src=['\"].+?akamaistreaming.+?.js",html)[0]
+        url = 'http://akamaistreaming.com/zn.php?id=%s&width=640&height=385&referer=%s'%(id,ref)
+        return url
     except:
         return

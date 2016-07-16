@@ -13,6 +13,9 @@ def prepare(netloc):
     return netloc
 
 def manual_url_fix(url):
+
+    try:    url = url.replace('wizhdsports.com','wizhdsports.sx')
+    except: pass
     try:
         url = url.replace('navixsport.com/sport.php','navixsport.com/m/sport.php')
         if 'prmobiles' in url: return

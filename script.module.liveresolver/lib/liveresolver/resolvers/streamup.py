@@ -7,7 +7,7 @@ from liveresolver.modules.log_utils import log
 
 
 def resolve(url):
-    try:
+    #try:
         id = re.findall('streamup.com/([^$/]+)',url)[0]
         playUrl = 'https://streamup.com/%s/embeds/video?startMuted=true'%id
 
@@ -22,7 +22,7 @@ def resolve(url):
         return url
 
        
-    except:
-       return
+    #except:
+    #   return
 
 

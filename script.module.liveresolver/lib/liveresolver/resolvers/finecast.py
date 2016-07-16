@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
 
-import re,urlparse,cookielib,os
+import re,urlparse,cookielib,os,urllib
 from liveresolver.modules import client,recaptcha_v2,control,constants, decryptionUtils
 from liveresolver.modules.log_utils import log
 cookieFile = os.path.join(control.dataPath, 'finecastcookie.lwp')
 
 def resolve(url):
-    try:
+    #try:
         try:
             referer = urlparse.parse_qs(urlparse.urlparse(url).query)['referer'][0]
         except:
@@ -15,16 +15,14 @@ def resolve(url):
 
 
         id = urlparse.parse_qs(urlparse.urlparse(url).query)['u'][0]
+        cj = get_cj()
         url = 'http://www.finecast.tv/embed4.php?u=%s&vw=640&vh=450'%id
-        log(url)
-        rs = client.request(url,referer=referer)
+        rs = client.request(url,referer=referer,cj=cj)
         sitekey = re.findall('data-sitekey="([^"]+)', rs)[0]
-        token = recaptcha_v2.UnCaptchaReCaptcha().processCaptcha(sitekey, lang='en')
-        token = {'g-recaptcha-response': token}
-
-
+        token = recaptcha_v2.UnCaptchaReCaptcha().processCaptcha(sitekey, lang='de')
+        #1:04
         result =client.request (url, post=urllib.urlencode(token),referer=referer)
-        
+        log(result)
 
         file = re.findall('[\'\"](.+?.stream)[\'\"]',result)[0]
         auth = re.findall('[\'\"](\?wmsAuthSign.+?)[\'\"]',result)[0]
@@ -33,8 +31,8 @@ def resolve(url):
         return rtmp
 
         
-    except:
-        return
+    #except:
+    #    return
 
 
 def get_cj():

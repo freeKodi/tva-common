@@ -2,7 +2,7 @@
 
 
 import re,urllib,urlparse,base64
-from liveresolver.modules import client,constants
+from liveresolver.modules import client,constants,decryptionUtils
 from liveresolver.modules.log_utils import log
 
 def resolve(url):
@@ -22,12 +22,13 @@ def resolve(url):
         pageUrl=url
 
         result = client.request(url, referer=referer,mobile=True)
+        result = decryptionUtils.doDemystify(result)
         result=urllib.unquote(result)
         var = re.compile('var\s(.+?)\s*=\s*[\'\"](.+?)[\'\"]').findall(result)
         var_dict = dict(var)
 
         if 'm3u8' in result:
-            url = re.compile('file.+?\s*=\s*(?:unescape\()[\'\"](.+?)[\'\"]').findall(result)[0]
+            url = re.compile('(?:var\s*)?file.+?\s*=\s*(?:unescape\()[\'\"](.+?)[\'\"]').findall(result)[-1]
             url = 'http://' + url + '.m3u8'
             url += '|%s' % urllib.urlencode({'User-Agent': client.agent(), 'Referer': url,'X-Requested-With':constants.get_shockwave()})
             log("Castalba: Found m3u8 url: " + url)
@@ -37,7 +38,7 @@ def resolve(url):
                 filePath = re.compile("'file'\s*:\s*(?:unescape\()?'(.+?)'").findall(result)[0]
                 
             except:
-                file = re.findall('var file\s*=\s*(?:unescape\()?(?:\'|\")(.+?)(?:\'|\")',result)[0]
+                file = re.findall('(?:var\s*)?file\s*=\s*(?:unescape\()?(?:\'|\")(.+?)(?:\'|\")',result)[-1]
                 try:
                     file2 = re.findall("'file':\s*unescape\(file\)\s*\+\s*unescape\('(.+?)'\)",result)[0]
                     filePath = file+file2
@@ -45,10 +46,11 @@ def resolve(url):
                     filePath = file
             swf = re.compile("'flashplayer'\s*:\s*\"(.+?)\"").findall(result)[0]
             
-
             sm = re.findall("'streamer':(.+?),",result)[0]
             strm_funcs = re.findall('function\s*(.+?)\s*\{([^\}]+)',result,flags=re.DOTALL)
             for f in strm_funcs:
+                if f[0] in ['(p,a,c,k,e,r)','()']:
+                    continue
                 if '%s'%f[0] in sm:
                     strm_func = f[1]
                     break

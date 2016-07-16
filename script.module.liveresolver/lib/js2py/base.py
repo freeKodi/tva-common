@@ -510,7 +510,7 @@ class PyJs(object):
 
     def cok(self):
         """Check object coercible"""
-        if self.Class in {'Undefined', 'Null'}:
+        if self.Class in ['Undefined', 'Null']:
             raise MakeError('TypeError', 'undefined or null can\'t be converted to object')
 
     def to_int(self):
@@ -1393,7 +1393,9 @@ class PyJsArray(PyJs):
             new_len =  desc['value'].to_uint32()
             if new_len!=desc['value'].to_number().value:
                 raise MakeError('RangeError', 'Invalid range!')
-            new_desc = {k:v for k,v in desc.iteritems()}
+            new_desc = {}
+            for k,v in desc.iteritems():
+                new_desc[k] = v
             new_desc['value'] = Js(new_len)
             if new_len>=old_len:
                 return PyJs.define_own_property(self, prop, new_desc)
@@ -1588,7 +1590,9 @@ def fill_prototype(prototype, Class, attrs, constructor=False):
         e = getattr(Class, i)
         if hasattr(e, '__func__'):
             temp = PyJsFunction(e.__func__, FunctionPrototype)
-            attrs = {k:v for k,v in attrs.iteritems()}
+            attrs = {}
+            for k,v in attrs.iteritems():
+                attrs[k] = v
             attrs['value'] = temp
             prototype.define_own_property(i, attrs)
         if constructor:
@@ -1745,9 +1749,10 @@ builtins = ('true','false','null','undefined','Infinity',
 
 scope = dict(zip(builtins, [eval(e) for e in builtins]))
 
-JS_BUILTINS = {k:v for k,v in scope.iteritems()}
-
-
+JS_BUILTINS = {}
+#k:v for k,v in scope.iteritems()
+for k,v in scope.iteritems():
+    JS_BUILTINS[k] = v
 # Fill in NUM_BANK
 for e in xrange(-2**10,2**14):
     NUM_BANK[e] = Js(e)

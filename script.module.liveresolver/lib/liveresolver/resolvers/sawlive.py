@@ -11,17 +11,17 @@ def resolve(url):
     try:
 
         page = re.compile('//(.+?)/(?:embed|v)/([0-9a-zA-Z-_]+)').findall(url)[0]
-        page = 'http://%s/embed/%s' % (page[0], page[1])
+        
         try: referer = urlparse.parse_qs(urlparse.urlparse(url).query)['referer'][0]
         except: referer = page
         try: host = urlparse.parse_qs(urlparse.urlparse(url).query)['host'][0]
-        except: host = 'sawlive.tv'
-
+        except: host = 'www.sawlive.tv'
+        page = 'http://sawlive.tv/embed/%s' % (page[1])
         headers={'User-Agent': client.agent(),'Host': host, 'Referer': referer, 'Connection': 'keep-alive'}
-
         result = client.request(page, referer=referer, headers = headers)
         
         unpacked = ''
+        
         packed = result.split('\n')
         for i in packed:
             try:
@@ -29,8 +29,6 @@ def resolve(url):
             except:
                 pass
         result += unpacked
-        result = decryptionUtils.doDemystify(result)
-        
         result = urllib.unquote_plus(result)
         r2 = result
         resul = None
@@ -51,16 +49,21 @@ def resolve(url):
                 pass
         
         if resul is None:
-            aaa = r2.replace('var ','').replace('\' ','\' +').replace(' \'','+ \'')
+            #aaa = r2.replace('var ','').replace('\' ','\' +').replace(' \'','+ \'')
 
-            aaa = aaa.replace('document.write(','result =').replace('\');','\'')
-            aaa = re.sub('function.+?\(\)[^}]+}\s*','',aaa)
-            aaa = re.sub('=([^\'\"\s]+)\s*([^\'\";]+);',r'=\1+\2;',aaa)
+            aaa = r2.replace('document.write(',' var result =').replace('\');','\'')
             aaa = aaa.replace('"\' +swidth+ \'"','')
             aaa = aaa.replace('"\' +sheight+ \'"','')
-            aaa = re.sub('([^+])\s([^+])',r'\1+\2',aaa)
-            
-            exec(aaa)
+            aaa = re.sub('([^+\s])\s([^+\s])',r'\1+\2',aaa)
+            aaa = aaa.replace('function+','function ')
+            aaa = aaa.replace('var+','var ')
+            aaa = aaa.replace('result+','result ')
+            import js2py
+            context = js2py.EvalJs()
+            context.swidth = '400'
+            context.sheight = '400'
+            context.execute(aaa)
+            result = context.result
             result = urllib.unquote_plus(result)
             url = client.parseDOM(result, 'iframe', ret='src')[-1]
             result = client.request(url, headers = headers)

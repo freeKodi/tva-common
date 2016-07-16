@@ -26,12 +26,17 @@ from liveresolver.modules.log_utils import log
 def resolve(url):
     try:
         url = url.replace('/true/default','')
-        channel = re.compile('[/v/|/view#|/widget#]([\w]+)').findall(url)[-1]
-        url = 'http://veetle.com/index.php/stream/ajaxStreamLocation/%s/android-hls' % channel
-        result = client.request(url, mobile=True)
-        log(result)
-        url = json.loads(result)
-        url = url['payload']
+        if 'index.php' in url:
+            channel = url.split('/')[-1]
+        else:
+            channel = re.compile('[/v/|/view#|/widget#]([\w]+)').findall(url)[-1]
+
+        url = 'http://veetle.com/v/1dd55aa6d332f4a120143c89d5898df8'
+        result = client.request(url, mobile=True, output='geturl')
+        ls = result.split('/')
+        channel = ls[-2]
+        session = ls[-1]
+        url = 'http://veetle.com/index.php/hls/streamMbrFast/%s_%s/stream.m3u8'%(channel,session)
         return url
     except:
         return

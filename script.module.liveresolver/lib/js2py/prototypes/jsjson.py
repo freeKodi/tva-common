@@ -159,8 +159,12 @@ def Quote(string):
 
 
 def to_js(this, d):
+    
     if isinstance(d, dict):
-        return this.Js({k:this.Js(v) for k, v in d.iteritems()})
+        a = {}
+        for k,v in d.iteritems():
+            a[k] = this.Js(v)
+        return this.Js(a)
     return this.Js(d)
 
 

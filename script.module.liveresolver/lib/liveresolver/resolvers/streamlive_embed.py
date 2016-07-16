@@ -15,18 +15,14 @@ def resolve(url):
     try:
         
         try: 
-            referer = urlparse.parse_qs(urlparse.urlparse(url).query)['referer'][0]
-            url = url.replace(referer,'').replace('?referer=','').replace('&referer=','')
+            referer = re.findall('referer=([^&$]+)',url)[0]
         except:
             referer = url
 
         id = re.findall('embed/(\d+)',url)[0]
         page = 'http://www.streamlive.to/embedplayer_new2.php?width=620&height=470&channel=%s&autoplay=true'%id
         
-
-
-        result = client.request(page,headers={'referer':'http://www.streamlive.to', 'Content-type':'application/x-www-form-urlencoded', 'Origin': 'http://www.streamlive.to', 'Host':'www.streamlive.to', 'User-agent':client.agent()})
-        log(result)
+        result = client.request(page,referer=referer)
 
         token_url = re.compile('getJSON\("(.+?)"').findall(result)[0]
         if 'http' not in token_url:

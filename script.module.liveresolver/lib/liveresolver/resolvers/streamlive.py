@@ -40,7 +40,7 @@ def resolve(url):
           control.infoDialog('Premium channel. Upgrade your account to watch it!', heading='Streamlive.to')
           return 
 
-        if 'not logged in yet' in result.lower():
+        if 'not logged in yet' in result.lower() or 'you have reached the limit today' in result.lower():
             #Cookie expired or not valid, request new cookie
             cj = login(cj,post_data)
             cj.save (cookieFile,ignore_discard=True)
@@ -63,7 +63,7 @@ def resolve(url):
 
 
 def login(cookies,post_data):
-    log('Making new login token.')
+    log('Streamlive: Making new login token.')
     cj = client.request('http://www.streamlive.to/login.php', post=post_data, headers = {'referer':'http://www.streamlive.to/login', 'Content-type':'application/x-www-form-urlencoded', 'Origin': 'http://www.streamlive.to', 'Host':'www.streamlive.to', 'User-agent':client.agent()},cj=cookies,output='cj')
     return cj
 
