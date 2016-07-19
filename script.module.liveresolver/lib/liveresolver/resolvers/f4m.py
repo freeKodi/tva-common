@@ -9,9 +9,9 @@ def resolve(url):
         try: referer = urlparse.parse_qs(urlparse.urlparse(url).query)['referer'][0]
         except: referer = url
         url = url.replace(referer,'').replace('?referer=','')
-        from liveresolver.modules.f4mproxy.F4mProxy import f4mProxyHelper
+        from f4mproxy.F4mProxy import f4mProxyHelper
         helper=f4mProxyHelper()
-        url_to_play,stopEvent = helper.start_proxy(url, 'Test f4m')
+        url_to_play,stopEvent = helper.start_proxy(url, 'play')
         return url_to_play
     except:
         return

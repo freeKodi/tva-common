@@ -153,7 +153,8 @@ def finder1(html,url):
         except: pass
 
         urls += re.findall('<a.+?href=[\'\"](/live-.+?stream.+?)[\'\"]',html)
-        urls += re.findall('(http://www.hdmyt.info/(?:channel|player).php\?file=[^"\']+)["\']',html) 
+        urls += re.findall('(http://www.hdmyt.info/(?:channel|player).php\?file=[^"\']+)["\']',html)
+        
         from random import shuffle
         for url in urls:
             url = url.replace('https','http')
@@ -204,7 +205,7 @@ def finder2(html,url):
 #castalba
 def finder3(html,url):
     try:
-        reg=re.compile('id="(.+?)";.+?src="http://www.castalba.tv/.+?.js')
+        reg=re.compile('id=[\"\']([^\"\']+)[\"\'];.+?castalba.tv/.+?.js')
         id=re.findall(reg,html)[0]
         url = 'http://castalba.tv/embed.php?cid=%s&wh=600&ht=380&referer=%s'%(id,url)
         return url
@@ -357,8 +358,11 @@ def finder15(html,url):
 def finder16(html,url):
     try:
         ref=url
-        id = re.findall('id=(?:\'|\")(\d+)(?:\'|\");width=.*?pt987.googlecode.com',html)[0]
-        url = 'http://mybeststream.xyz/?id=%s&width=640&height=385&referer=%s'%(id,ref)
+        try:
+            id = re.findall('id=(?:\'|\")(\d+)(?:\'|\");width=.*?pt987.googlecode.com',html)[0]
+        except:
+            id = re.findall('id=[\"\']([^\"\']+)[\"\'];.+?mybeststream.xyz',html)[0]
+        url = 'http://mybeststream.xyz/gen_s.php?id=%s&width=640&height=385&referer=%s'%(id,ref)
         return url
     except:
         pass
@@ -1450,3 +1454,4 @@ def finder129(html,ref):
         return url
     except:
         return
+

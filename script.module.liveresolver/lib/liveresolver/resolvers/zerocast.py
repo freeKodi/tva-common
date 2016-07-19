@@ -19,24 +19,23 @@
 '''
 
 
-import re,urlparse,base64, urllib
+import re,urlparse,base64, urllib,json
 from liveresolver.modules import client,constants
 from liveresolver.modules.log_utils import log
 
 def resolve(url):
-    #try:
+    try:
         try: referer = urlparse.parse_qs(urlparse.urlparse(url).query)['referer'][0]
         except: referer = 'http://zerocast.tv/channels'
         if 'chan=' in url:
             result = client.request(url, referer=referer)
-            log(result)
-            log('banana')
-            url = re.findall('<script\stype=[\'"]text/javascript[\'"]\ssrc=[\'"](.+?)[\'"]>', result)[0]
+            url = re.findall('src=[\'"](.+?)[\'"]>', result)[-1]
 
-        log('bina2')
+        page = url
         r = re.findall('.+?a=([0-9]+)', url)[0]
 
         url = 'http://zerocast.tv/embed.php?a=%s&id=&width=640&height=480&autostart=true&strech=exactfit' % r
+
 
         result = client.request(url, referer=referer)
         unpacked = ''
@@ -47,20 +46,15 @@ def resolve(url):
             except:
                 pass
         result += unpacked
+        js = re.findall('getJSON\([\"\'](http://zerocast.tv/file[^\"\']+)',result)[0]
+        token = json.loads(client.request(js))['token']
         r = re.findall('curl\s*=\s*[\'"](.+?)[\'"]', result)
-        r += re.findall('file\s*:\s*["\'](.+?)["\']', result)
         r = r[0].decode('base64', 'strict')
 
-        #if r.startswith('rtmp'):
-        #    return '%s pageUrl=%s live=1 swfUrl=http://p.jwpcdn.com/6/12/jwplayer.flash.swf flashver=' % (r, url) + constants.flash_ver() + ' swfVfy=1 timeout=10'
-
-        if '.m3u8' in r:
-            chunk = client.request(r)
-            chunk = re.compile('(chunklist_.+)').findall(chunk)[0]
-            url = r.split('.m3u8')[0].rsplit('/', 1)[0] + '/' + chunk
-            url += '|%s' % urllib.urlencode({'User-Agent': client.agent()})
-            return url
-    #except:
-    #    return
+        if '.m3u8' in r or 'rtmp' in r:
+            url = r
+            return url + ' swfUrl=http://p.jwpcdn.com/6/12/jwplayer.flash.swf flashver=' + constants.flash_ver() + ' token=' + token + ' timeout=15 live=true swfVfy=1 pageUrl=' + page
+    except:
+        return
 
 

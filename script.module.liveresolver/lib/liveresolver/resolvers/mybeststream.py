@@ -31,10 +31,10 @@ def resolve(url):
 
         result = client.request(page, referer=referer)
         result = decryptionUtils.doDemystify(result)
-        log(result)
+        token = re.findall(r'(\["\\x.+?[^\]]+\])',result)[0]
+        token = eval(token)[1]
         rtmp = re.findall('.*(?:file|streamer|hestia):\s*["\']([^\'"]+).*',result)[0]
-        rtmp=rtmp.replace('rtmpe://l.mybeststream.xyz/r/','')
-        url='rtmpe://l.mybeststream.xyz/r/'+ rtmp + ' swfUrl=http://mybeststream.xyz/jwplayer.flash.swf swfsize=61916 swfhash=e54728508e787f43cd472ef9ba2e514e2eca3f0679b3782206a3808b8d89b164 token=c.r.e.a.t.e.S.t. flashver=' + constants.flash_ver() + ' live=1 timeout=15 swfVfy=1 pageUrl=' + page
+        url = rtmp + ' swfUrl=http://mybeststream.xyz/YjFlMTI0MT/jwplayer.flash.swf token=' + token + ' flashver=' + constants.flash_ver() + ' live=1 timeout=15 swfVfy=1 pageUrl=' + page
         return url
     #except:
     #   return

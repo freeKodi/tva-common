@@ -44,7 +44,9 @@ def resolve(url):
         log('Filmon: Selecting stream url...')
         url = [(i['url'], int(i['watch-timeout'])) for i in result]
         url = [i for i in url if '.m3u8' in i[0]]
-        url = url[0][0]
+        
+        url.sort()
+        url = url[-1][0]
 
         return url
     except:
