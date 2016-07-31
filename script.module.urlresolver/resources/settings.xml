@@ -69,6 +69,9 @@
 		<setting label="bestreams" type="lsep"/>
 		<setting id="BestreamsResolver_priority" type="number" label="Priority" default="100"/>
 		<setting id="BestreamsResolver_enabled" type="bool" label="Enabled" default="true"/>
+		<setting label="briskfile" type="lsep"/>
+		<setting id="BriskfileResolver_priority" type="number" label="Priority" default="100"/>
+		<setting id="BriskfileResolver_enabled" type="bool" label="Enabled" default="true"/>
 		<setting label="castamp" type="lsep"/>
 		<setting id="CastampResolver_priority" type="number" label="Priority" default="100"/>
 		<setting id="CastampResolver_enabled" type="bool" label="Enabled" default="true"/>
@@ -130,11 +133,11 @@
 		<setting label="grifthost" type="lsep"/>
 		<setting id="GrifthostResolver_priority" type="number" label="Priority" default="100"/>
 		<setting id="GrifthostResolver_enabled" type="bool" label="Enabled" default="true"/>
+	</category>
+	<category label="Resolvers 2">
 		<setting label="hugefiles" type="lsep"/>
 		<setting id="HugefilesResolver_priority" type="number" label="Priority" default="100"/>
 		<setting id="HugefilesResolver_enabled" type="bool" label="Enabled" default="true"/>
-	</category>
-	<category label="Resolvers 2">
 		<setting label="idowatch" type="lsep"/>
 		<setting id="IDoWatchResolver_priority" type="number" label="Priority" default="100"/>
 		<setting id="IDoWatchResolver_enabled" type="bool" label="Enabled" default="true"/>
