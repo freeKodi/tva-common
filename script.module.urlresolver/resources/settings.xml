@@ -432,6 +432,9 @@
 		<setting label="xvidstage" type="lsep"/>
 		<setting id="XvidstageResolver_priority" type="number" label="Priority" default="100"/>
 		<setting id="XvidstageResolver_enabled" type="bool" label="Enabled" default="true"/>
+		<setting label="youlol.biz" type="lsep"/>
+		<setting id="YouLOLResolver_priority" type="number" label="Priority" default="100"/>
+		<setting id="YouLOLResolver_enabled" type="bool" label="Enabled" default="true"/>
 		<setting label="yourupload.com" type="lsep"/>
 		<setting id="YourUploadResolver_priority" type="number" label="Priority" default="100"/>
 		<setting id="YourUploadResolver_enabled" type="bool" label="Enabled" default="true"/>
