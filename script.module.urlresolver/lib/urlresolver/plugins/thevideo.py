@@ -60,23 +60,26 @@ class TheVideoResolver(UrlResolver):
         with common.kodi.ProgressDialog(header, line1=line1, line2=line2, line3=line3) as pd:
             pd.update(100)
             start = time.time()
-            expires = time_left = 300  # give user 5 minutes
-            interval = 5  # check url every 5 seconds
+            expires = time_left = 60  # give user 1 minute
+            interval = 10  # check url every 10 seconds
             while time_left > 0:
-                vt = self.__check_auth(media_id)
-                if vt: return vt
-                
-                time_left = expires - int(time.time() - start)
-                progress = time_left * 100 / expires
-                pd.update(progress)
                 for _ in range(INTERVALS):
                     common.kodi.sleep(interval * 1000 / INTERVALS)
                     if pd.is_canceled(): return
+                    time_left = expires - int(time.time() - start)
+                    if time_left < 0: time_left = 0
+                    progress = time_left * 100 / expires
+                    pd.update(progress)
+
+                vt = self.__check_auth(media_id)
+                if vt: return vt
         
     def __check_auth(self, media_id):
+        common.log_utils.log('Checking Auth: %s' % (media_id))
         url = 'https://thevideo.me/pair?file_code=%s&check' % (media_id)
         try: js_result = json.loads(self.net.http_GET(url, headers=self.headers).content)
         except ValueError: raise ResolverError('Unusable Authorization Response')
+        common.log_utils.log('Auth Result: %s' % (js_result))
         if js_result.get('status'):
             return js_result.get('response', {}).get('vt')
         
