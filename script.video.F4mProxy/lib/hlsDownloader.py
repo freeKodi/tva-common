@@ -136,7 +136,7 @@ class HLSDownloader():
         self.status='finished'
 
         
-def getUrl(url,timeout=20,returnres=False):
+def getUrl(url,timeout=15,returnres=False):
     global cookieJar
     global clientHeader
     try:
@@ -153,11 +153,12 @@ def getUrl(url,timeout=20,returnres=False):
         
         if gproxy:
             proxies= {"http": "http://"+gproxy}
-        
+        #import random
+        #headers['User-Agent'] =headers['User-Agent'] + str(int(random.random()*100000))
         if post:
-            req = session.post(url, headers = headers, data= post, proxies=proxies)
+            req = session.post(url, headers = headers, data= post, proxies=proxies,verify=False,timeout=timeout)
         else:
-            req = session.get(url, headers=headers,proxies=proxies )
+            req = session.get(url, headers=headers,proxies=proxies,verify=False ,timeout=timeout)
 
         req.raise_for_status()
         if returnres: 
@@ -219,19 +220,22 @@ def getUrlold(url,timeout=20, returnres=False):
 def download_chunks(URL, chunk_size=4096, enc=None):
     #conn=urllib2.urlopen(URL)
     #print 'starting download'
+    
+    conn=getUrl(URL,timeout=6,returnres=True)
+    #while 1:
     if enc:
         if USEDec==1 :
             chunk_size*=1000
         else:
             chunk_size*=100
+
     else:
-        chunk_size=chunk_size*10
-    conn=getUrl(URL,returnres=True)
-    #while 1:
+#        yield conn.content;
+        chunk_size=chunk_size*1000
     
     for chunk in conn.iter_content(chunk_size=chunk_size):
         yield chunk
-    
+
         #if chunk_size==-1:
         #    data=conn.read()
         #else:
@@ -242,21 +246,21 @@ def download_chunks(URL, chunk_size=4096, enc=None):
     #return 
     #print 'function finished'
 
-    if 1==2:
-        data= conn.read()
-        #print repr(data)
-        #print 'data downloaded'
-        for i in range(0,len(data), chunk_size):
-            d=data[i:i+chunk_size]
-            #print repr(d)
-            yield d
-            
-        mod_index=len(data)%chunk_size;
-        if mod_index>0 and mod_index <chunk_size :
-            d=data[-mod_index:]
-            yield d
-        #print 'function finished'
-        return
+    #if 1==2:
+    #    data= conn.read()
+    #    #print repr(data)
+    #    #print 'data downloaded'
+    #    for i in range(0,len(data), chunk_size):
+    #        d=data[i:i+chunk_size]
+    #        #print repr(d)
+    #        yield d
+    #        
+    #    mod_index=len(data)%chunk_size;
+    #    if mod_index>0 and mod_index <chunk_size :
+    #        d=data[-mod_index:]
+    #        yield d
+    #    #print 'function finished'
+    #    return
     
     #    data=conn.read(chunk_size)
     #    if not data: return
@@ -385,9 +389,13 @@ def handle_basic_m3u(url):
                         codeurl=attribs['URI'].strip('"')
                         if gauth:
                             codeurl=gauth
-                        #http://mlblive-akc.mlb.com/ls01/mlbam/2016/08/18/MLB_GAME_VIDEO_BOSDET_HOME_20160818/1800K/1800_complete.m3u8
+                        
                         #key = download_file(codeurl)
-                        #key='KiWpjhcGUNB6xKTLP7uHRQ=='.decode("base64")
+                        
+                        if not codeurl.startswith('http'):
+                            import urlparse
+                            codeurl=urlparse.urljoin(url, codeurl)
+                            
                         assert len(key) == 16, 'EXT-X-KEY: downloaded key file has bad length'
                         if 'IV' in attribs:
                             assert attribs['IV'].lower().startswith('0x'), 'EXT-X-KEY: IV attribute has bad format'
@@ -523,18 +531,21 @@ def downloadInternal(url,file,maxbitrate=0,stopEvent=None):
                 pass
             else:
                 # choose to start playback three files from the end, since this is a live stream
-                medialist = medialist[-3:]
+                medialist = medialist[-6:]
             #print 'medialist',medialist
-            
+            addsomewait=False
             for media in medialist:
+                 
                 if stopEvent and stopEvent.isSet():
                     return
                 if media is None:
                     #queue.put(None, block=True)
                     return
                 seq, encobj, duration, targetduration, media_url = media
+                addsomewait=True
                 if seq > last_seq:
                     #print 'downloading.............',url
+                    
                     enc=None
                     if encobj:
                         codeurl,iv=encobj
@@ -549,26 +560,28 @@ def downloadInternal(url,file,maxbitrate=0,stopEvent=None):
                         #enc=AESDecrypter.new(key, 2, iv)
                         
                     if glsession: media_url=media_url.replace(glsession,glsession[:-10]+''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
-                    for chunk in download_chunks(urlparse.urljoin(url, media_url),enc=encobj):
-                        if stopEvent and stopEvent.isSet():
-                            return
-                        #print '1. chunk available %d'%len(chunk)
-                        if enc: 
-                             if not USEDec==3:
-                                chunk = enc.decrypt(chunk)
-                             else:
-                                chunkb=array.array('B',chunk)
-                                chunk = enc.decrypt(chunkb)
-                                chunk="".join(map(chr, chunk))
-                        #if enc: chunk = enc.decrypt(chunk,key,'CBC')
-                        #print '2. chunk done %d'%len(chunk)
-                        if dumpfile: dumpfile.write(chunk)
-                        #queue.put(chunk, block=True)
-                        send_back(chunk,file)
-                        #print '3. chunk available %d'%len(chunk)
-                    last_seq = seq
-                    changed = 1
-                    playedSomething=True
+                    try:
+                        for chunk in download_chunks(urlparse.urljoin(url, media_url),enc=encobj):
+                            if stopEvent and stopEvent.isSet():
+                                return
+                            #print '1. chunk available %d'%len(chunk)
+                            if enc: 
+                                 if not USEDec==3:
+                                    chunk = enc.decrypt(chunk)
+                                 else:
+                                    chunkb=array.array('B',chunk)
+                                    chunk = enc.decrypt(chunkb)
+                                    chunk="".join(map(chr, chunk))
+                            #if enc: chunk = enc.decrypt(chunk,key,'CBC')
+                            #print '2. chunk done %d'%len(chunk)
+                            if dumpfile: dumpfile.write(chunk)
+                            #queue.put(chunk, block=True)
+                            send_back(chunk,file)
+                            #print '3. chunk available %d'%len(chunk)
+                        last_seq = seq
+                        changed = 1
+                        playedSomething=True
+                    except: pass
             
             '''if changed == 1:
                 # initial minimum reload delay
@@ -586,7 +599,7 @@ def downloadInternal(url,file,maxbitrate=0,stopEvent=None):
             changed -= 1
             '''
             if not playedSomething:
-                xbmc.sleep(2000)
+                xbmc.sleep(2000+ (3000 if addsomewait else 0))
     except:
         control[0] = 'stop'
         raise
