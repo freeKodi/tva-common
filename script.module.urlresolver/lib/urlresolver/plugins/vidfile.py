@@ -1,6 +1,6 @@
 '''
     urlresolver XBMC Addon
-    Copyright (C) 2016 Gujal
+    Copyright (C) 2016 MavWolverine
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -21,20 +21,17 @@ from lib import jsunpack
 from urlresolver import common
 from urlresolver.resolver import UrlResolver, ResolverError
 
-class WatchVideoResolver(UrlResolver):
-    name = "watchvideo"
-    domains = ["watchvideo.us", "watchvideo2.us", "watchvideo3.us", 
-               "watchvideo4.us", "watchvideo5.us", "watchvideo6.us", 
-               "watchvideo7.us", "watchvideo8.us", "watchvideo9.us",
-               "watchvideo10.us"]
-    pattern = '(?://|\.)(watchvideo[0-9]?[0-9]?\.us)/(?:embed-)?([0-9a-zA-Z]+)'
+class VidFileResolver(UrlResolver):
+    name = "vidfile"
+    domains = ["vidfile.xyz",]
+    pattern = '(?://|\.)(vidfile.xyz)/(?:embed-)?([0-9a-zA-Z]+)'
 
     def __init__(self):
         self.net = common.Net()
 
     def get_media_url(self, host, media_id):
         web_url = self.get_url(host, media_id)
-        html = self.net.http_GET(web_url).content
+        html = self.net.http_GET(web_url, headers={'Referer': 'abc'}).content
 
         if 'File was deleted' in html:
             raise ResolverError('File Removed')
@@ -48,13 +45,12 @@ class WatchVideoResolver(UrlResolver):
         else:
             js = html
 
-        link = re.search('file:"(.*?m3u8)"', js)
-        #link = re.search('(?:m3u8").*?"(.*?)"', js)
+        link = re.search('([^"]*.mp4)', js)
         if link:
-            common.log_utils.log_debug('watchvideo.us Link Found: %s' % link.group(1))
+            common.log_utils.log_debug('vidfile.xyz Link Found: %s' % link.group(1))
             return link.group(1)
 
-        raise ResolverError('Unable to find watchvideo.us video')
+        raise ResolverError('Unable to find vidfile.xyz video')
 
     def get_url(self, host, media_id):
         return 'http://%s/%s.html' % (host, media_id)
