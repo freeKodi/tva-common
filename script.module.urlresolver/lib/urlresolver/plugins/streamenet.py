@@ -24,47 +24,35 @@ from lib import helpers
 from urlresolver import common
 from urlresolver.resolver import UrlResolver, ResolverError
 
-class VideoRevResolver(UrlResolver):
-    name = "videorev"
-    domains = ['videorev.cc']
-    pattern = '(?://|\.)(videorev\.cc)/([a-zA-Z0-9]+)\.html'
+class EstreamResolver(UrlResolver):
+    name = "streame.net"
+    domains = ['streame.net']
+    pattern = '(?://|\.)(streame\.net)/(?:embed-)?([0-9a-zA-Z]+)'
 
     def __init__(self):
         self.net = common.Net()
 
     def get_media_url(self, host, media_id):
         web_url = self.get_url(host, media_id)
-        response = self.net.http_GET(web_url)
-        html = response.content
+        headers = {'User-Agent': common.FF_USER_AGENT, 'Referer': web_url}
+        html = self.net.http_GET(web_url, headers=headers).content
+        sources = self.__parse_sources_list(html)
+        source = helpers.pick_source(sources, self.get_setting('auto_pick') == 'true')
+        return source + helpers.append_headers(headers)
 
-        if html:
-            smil_id = re.search('([a-zA-Z0-9]+)(?=\|smil)', html).groups()[0]
-            smil_url = 'http://%s/%s.smil' % (host, smil_id)
-            result = self.net.http_GET(smil_url).content
-            
-            base = re.search('base="(.+?)"', result).groups()[0]
-            srcs = re.findall('src="(.+?)"', result)
-            try:
-                res = re.findall('width="(.+?)"', result)
-            except:
-                res = res = re.findall('height="(.+?)"', result)
-
-            i = 0
-            sources = []
-            for src in srcs:
-                sources.append([str(res[i]), '%s playpath=%s' % (base, src)])
-                i += 1
-                
-            source = helpers.pick_source(sources, self.get_setting('auto_pick') == 'true')
-            source = source.encode('utf-8')
-
-            return source
-
-        raise ResolverError('No playable video found.')
-
+    def __parse_sources_list(self, html):
+        sources = []
+        match = re.search('sources\s*:\s*\[(.*?)\]', html, re.DOTALL)
+        if match:
+            for match in re.finditer('''['"]?file['"]?\s*:\s*['"]([^'"]+)['"][^}]*['"]?label['"]?\s*:\s*['"]([^'"]*)''', match.group(1), re.DOTALL):
+                stream_url, label = match.groups()
+                stream_url = stream_url.replace('\/', '/')
+                sources.append((label, stream_url))
+        return sources
+    
     def get_url(self, host, media_id):
-        return self._default_get_url(host, media_id, 'http://{host}/{media_id}.html')
-
+        return self._default_get_url(host, media_id)
+        
     @classmethod
     def get_settings_xml(cls):
         xml = super(cls, cls).get_settings_xml()

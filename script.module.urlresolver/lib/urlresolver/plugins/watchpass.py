@@ -1,6 +1,8 @@
 """
-TheFile.me urlresolver plugin
-Copyright (C) 2013 voinage
+Watchpass urlresolver XBMC Addon
+Copyright (C) 2016 Seberoth
+
+Version 0.0.1
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -15,33 +17,28 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
-
 import re
-from lib import jsunpack
 from urlresolver import common
 from urlresolver.resolver import UrlResolver, ResolverError
 
-class CloudZillaResolver(UrlResolver):
-    name = "cloudzilla"
-    domains = ['cloudzilla.to', 'neodrive.co']
-    pattern = '(?://|\.)(cloudzilla.to|neodrive.co)/(?:share/file|embed)/([A-Za-z0-9]+)'
+class WatchpassResolver(UrlResolver):
+    name = "everplay.watchpass.net"
+    domains = ['everplay.watchpass.net']
+    pattern = '(?://|\.)(everplay\.watchpass\.net)/se/rapidme\.php\?url=(.+)'
 
     def __init__(self):
         self.net = common.Net()
 
     def get_media_url(self, host, media_id):
         web_url = self.get_url(host, media_id)
-        html = self.net.http_GET(web_url).content
-        for match in re.finditer('(eval\(function.*?)</script>', html, re.DOTALL):
-            html += jsunpack.unpack(match.group(1))
-            
-        common.log_utils.log(html)
+        resp = self.net.http_GET(web_url)
+        html = resp.content
 
-        match = re.search('vurl\s*=\s*"([^"]+)', html)
-        if match:
-            return match.group(1)
+        r = re.search('file: "(.+?)",', html)
+        if r:
+            return r.group(1)
         else:
-            raise ResolverError('Unable to resolve cloudtime link. Filelink not found.')
+            raise ResolverError('File Not Found or removed')
 
     def get_url(self, host, media_id):
-        return self._default_get_url(host, media_id, 'http://{host}/embed/{media_id}')
+        return self._default_get_url(host, media_id, 'http://{host}/se/rapidme.php?url={media_id}')
