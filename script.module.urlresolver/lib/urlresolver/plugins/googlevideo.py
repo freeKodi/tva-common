@@ -28,7 +28,7 @@ class GoogleResolver(UrlResolver):
     name = "googlevideo"
     domains = ["googlevideo.com", "googleusercontent.com", "get.google.com",
                "plus.google.com", "googledrive.com", "drive.google.com", "docs.google.com"]
-    pattern = 'http[s]*://(.*?(?:\.googlevideo|(?:plus|drive|get|docs)\.google|google(?:usercontent|drive))\.com)/(.*?(?:videoplayback\?|[\?&]authkey|host/)*.+)'
+    pattern = 'https?://(.*?(?:\.googlevideo|(?:plus|drive|get|docs)\.google|google(?:usercontent|drive))\.com)/(.*?(?:videoplayback\?|[\?&]authkey|host/)*.+)'
 
     def __init__(self):
         self.net = common.Net()
@@ -45,20 +45,23 @@ class GoogleResolver(UrlResolver):
 
     def get_media_url(self, host, media_id):
         web_url = self.get_url(host, media_id)
-        headers = {'User-Agent': common.FF_USER_AGENT}
-        response = self.net.http_GET(web_url)
-        res_headers = response.get_headers(as_dict=True)
-        if 'Set-Cookie' in res_headers:
-            headers['Cookie'] = res_headers['Set-Cookie']
-        
-        video = None
-        video_urls = self._parse_google(web_url, response.content)
+        response, video_urls = self._parse_google(web_url)
         if video_urls:
             video = helpers.pick_source(video_urls, self.get_setting('auto_pick') == 'true')
+        else:
+            video = None
+
+        headers = {'User-Agent': common.FF_USER_AGENT}
+        if response is not None:
+            res_headers = response.get_headers(as_dict=True)
+            if 'Set-Cookie' in res_headers:
+                headers['Cookie'] = res_headers['Set-Cookie']
 
         if not video:
             if ('redirector.' in web_url) or ('googleusercontent' in web_url):
                 video = urllib2.urlopen(web_url).geturl()
+            elif 'googlevideo.' in web_url:
+                video = web_url + helpers.append_headers(headers)
         else:
             if ('redirector.' in video) or ('googleusercontent' in video):
                 video = urllib2.urlopen(video).geturl()
@@ -80,18 +83,21 @@ class GoogleResolver(UrlResolver):
         xml.append('<setting id="%s_auto_pick" type="bool" label="Automatically pick best quality" default="false" visible="true"/>' % (cls.__name__))
         return xml
 
-    def _parse_google(self, link, html):
+    def _parse_google(self, link):
         sources = []
-        if 'get.' in link:
-            match = re.compile('request\s*:\s*\["([^"]+?)".*?\]').findall(html, re.DOTALL)
-            if match:
-                vid_id = match[-1]
-                sources = self.__parse_gget(vid_id, html)
-        elif 'plus.' in link:
-            sources = self.__parse_gplus(html)
+        response = None
+        if re.match('https?://get[.]', link):
+            if link.endswith('/'): link = link[:-1]
+            vid_id = link.split('/')[-1]
+            response = self.net.http_GET(link)
+            sources = self.__parse_gget(vid_id, response.content)
+        elif re.match('https?://plus[.]', link):
+            response = self.net.http_GET(link)
+            sources = self.__parse_gplus(response.content)
         elif 'drive.google' in link or 'docs.google' in link:
-            sources = self._parse_gdocs(link)
-        return sources
+            response = self.net.http_GET(link)
+            sources = self._parse_gdocs(response.content)
+        return response, sources
 
     def __parse_gplus(self, html):
         sources = []
@@ -148,9 +154,8 @@ class GoogleResolver(UrlResolver):
                                                 return sources
         return sources
 
-    def _parse_gdocs(self, link):
+    def _parse_gdocs(self, html):
         urls = []
-        html = self.net.http_GET(link).content
         for match in re.finditer('\[\s*"([^"]+)"\s*,\s*"([^"]+)"\s*\]', html):
             key, value = match.groups()
             if key == 'fmt_stream_map':
