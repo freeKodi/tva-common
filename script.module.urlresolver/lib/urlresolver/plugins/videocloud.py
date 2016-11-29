@@ -1,6 +1,6 @@
-'''
-    urlresolver XBMC Addon
-    Copyright (C) 2016 Gujal
+"""
+    Kodi urlresolver plugin
+    Copyright (C) 2016 script.module.urlresolver
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -14,17 +14,19 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-'''
+"""
+
 from lib import helpers
 from urlresolver.resolver import UrlResolver, ResolverError
 
-class PutLoadResolver(UrlResolver):
-    name = "putload.tv"
-    domains = ["putload.tv", "youlolx.site", "shitmovie.com"]
-    pattern = '(?://|\.)((?:putload\.tv|youlolx\.site)|shitmovie\.com))/(?:embed-)?([0-9a-zA-Z]+)'
+
+class VideocloudResolver(UrlResolver):
+    name = 'videocloud.co'
+    domains = ['videocloud.co']
+    pattern = '(?://|\.)(videocloud\.co)/(?:embed-)?([0-9a-zA-Z]+)'
 
     def get_media_url(self, host, media_id):
         return helpers.get_media_url(self.get_url(host, media_id))
 
     def get_url(self, host, media_id):
-        return self._default_get_url(host, media_id, 'http://{host}/embed-{media_id}.html')
+        return self._default_get_url(host, media_id)

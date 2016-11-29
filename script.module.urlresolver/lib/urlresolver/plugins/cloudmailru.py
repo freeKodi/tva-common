@@ -18,38 +18,27 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-
 import re
-from lib import helpers
 from urlresolver import common
 from urlresolver.resolver import UrlResolver, ResolverError
 
-class HappyStreamsResolver(UrlResolver):
-    name = "happystreams"
-    domains = ['happystreams.net']
-    pattern = '(?://|\.)(happystreams\.net)/([0-9a-zA-Z/-]+)'
+class MailRuResolver(UrlResolver):
+    name = "cloud.mail.ru"
+    domains = ['cloud.mail.ru']
+    pattern = '(?://|\.)(cloud\.mail\.ru)/public/([0-9A-Za-z]+/[^/]+)'
 
     def __init__(self):
         self.net = common.Net()
 
-    def get_media_url(self, host, media_id): # need fix
+    def get_media_url(self, host, media_id):
         web_url = self.get_url(host, media_id)
         html = self.net.http_GET(web_url).content
-        data = helpers.get_hidden(html)
-        furl = 'http://happystreams.net/dl'
-        headers = {'User-Agent': common.FF_USER_AGENT, 'Referer': web_url, 'Cookie': self.__get_cookies(host, html)}
-        html = self.net.http_POST(url=furl, form_data=data, headers=headers).content
-        html = helpers.add_packed_data(html)
-        source = re.search(r'file:\"(.*?)\"', html).groups()[0]
-        return source
-
-    def __get_cookies(self, host, html):
-        cookies = ['ref_url=http%3A%2F%2Fhappystreams.net%2F']
-        for match in re.finditer("\$\.cookie\(\s*'([^']+)'\s*,\s*'([^']+)", html):
-            key, value = match.groups()
-            cookies.append('%s=%s' % (key, value))
-        return '; '.join(cookies)
+        html = re.sub(r'[^\x00-\x7F]+', ' ', html)
+        url_match = re.search('"weblink_get"\s*:\s*\[.+?"url"\s*:\s*"([^"]+)', html)
+        tok_match = re.search('"tokens"\s*:\s*{\s*"download"\s*:\s*"([^"]+)', html)
+        if url_match and tok_match:
+            return '%s/%s?key=%s' % (url_match.group(1), media_id, tok_match.group(1))
+        raise ResolverError('No playable video found.')
 
     def get_url(self, host, media_id):
-        return self._default_get_url(host, media_id, 'http://{host}/{media_id}')
-        
+        return self._default_get_url(host, media_id, template='https://{host}/public/{media_id}')

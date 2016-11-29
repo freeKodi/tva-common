@@ -1,6 +1,5 @@
 """
-    urlresolver XBMC Addon
-    Copyright (C) 2011 t0mm0
+    Copyright (C) 2014  smokdpi
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -15,32 +14,34 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-
-from lib import helpers
+import re
 from urlresolver import common
 from urlresolver.resolver import UrlResolver, ResolverError
 
-
-class GorillavidResolver(UrlResolver):
-    name = "gorillavid"
-    domains = ["gorillavid.in", "gorillavid.com"]
-    pattern = '(?://|\.)(gorillavid\.(?:in|com))/(?:embed-)?([0-9a-zA-Z]+)'
+class AnyFilesResolver(UrlResolver):
+    name = "anyfiles"
+    domains = ["anyfiles.pl"]
+    pattern = '(?://|\.)(anyfiles\.pl)/.*?(?:id=|v=|/)([0-9]+)'
 
     def __init__(self):
         self.net = common.Net()
+        self.user_agent = common.IE_USER_AGENT
+        self.headers = {'User-Agent': self.user_agent}
 
     def get_media_url(self, host, media_id):
         web_url = self.get_url(host, media_id)
-        headers = {'User-Agent': common.FF_USER_AGENT}
-        response = self.net.http_GET(web_url, headers=headers)
-        html = response.content
-        sources = helpers.scrape_sources(html)
-        if not sources:
-            data = helpers.get_hidden(html)
-            headers['Cookie'] = response.get_headers(as_dict=True).get('Set-Cookie', '')
-            html = self.net.http_POST(response.get_url(), headers=headers, form_data=data).content
-            sources = helpers.scrape_sources(html)
-        return helpers.pick_source(sources) + helpers.append_headers(headers)
+        self.headers['Referer'] = web_url
+        html = self.net.http_GET(web_url, headers=self.headers).content
+        r = re.search('src="/?(pcs\?code=[^"]+?)"', html, re.DOTALL)
+        if r:
+            web_url = 'http://video.anyfiles.pl/%s' % (r.group(1))
+            html = self.net.http_GET(web_url, headers=self.headers).content
+            match = re.search('(http[^"]+?mp4)', html)
+            if match:
+                return match.group(1)
+
+        else:
+            raise ResolverError('File not found')
 
     def get_url(self, host, media_id):
-        return 'http://gorillavid.in/%s' % (media_id)
+        return "http://video.anyfiles.pl/w.jsp?id=%s&width=620&height=349&pos=&skin=0" % (media_id)
