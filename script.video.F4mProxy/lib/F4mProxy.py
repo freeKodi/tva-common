@@ -53,10 +53,14 @@ class MyHandler(BaseHTTPRequestHandler):
    """
     def do_HEAD(self):
         print "XBMCLocalProxy: Serving HEAD request..."
+        #
         self.send_response(200)
         rtype="flv-application/octet-stream"  #default type could have gone to the server to get it.
         #self.send_header("Accept-Ranges","bytes")
-        self.end_headers() 
+        self.send_header("Content-Type", rtype)
+        self.end_headers()
+        
+         
         #s.answer_request(False)
     """
    Serves a GET request.
@@ -168,7 +172,7 @@ class MyHandler(BaseHTTPRequestHandler):
                 from interalSimpleDownloader import interalSimpleDownloader
                 downloader=interalSimpleDownloader();
                 if not downloader.init(self.wfile,url,proxy,g_stopEvent,maxbitrate):
-                    print 'cannot init'
+                    print 'cannot init throw error because init'#throw error because init
                     return
                 srange,framgementToSend=(None,None)
                 self.send_response(200)
@@ -179,8 +183,9 @@ class MyHandler(BaseHTTPRequestHandler):
                 from TSDownloader import TSDownloader
                 downloader=TSDownloader();
                 if not downloader.init(self.wfile,url,proxy,g_stopEvent,maxbitrate):
-                    print 'cannot init'
-                    return
+                    print 'cannot init but will continue to play'
+                    #print 1/0
+                    #return
                 srange,framgementToSend=(None,None)
                 self.send_response(200)
                 rtype="video/mp2t"  #default type could have gone to the server to get it.
@@ -224,18 +229,22 @@ class MyHandler(BaseHTTPRequestHandler):
                 print 'srange,framgementToSend',srange,framgementToSend
                 #runningthread=thread.start_new_thread(downloader.keep_sending_video,(self.wfile,srange,framgementToSend,))
                 
-                xbmc.sleep(500)
-                while not downloader.status=="finished":
-                    xbmc.sleep(200);
+                #xbmc.sleep(500)
+                #while not downloader.status=="finished":
+                #    xbmc.sleep(200);
 
 
         except:
             #Print out a stack trace
             traceback.print_exc()
             g_stopEvent.set()
+            print 'sending 404'
+            
             self.send_response(404)
+            
             #Close output stream file
             self.wfile.close()
+            print 'closed'
             return
 
         #Close output stream file
@@ -401,7 +410,17 @@ class f4mProxyHelper():
             progress.update( 100, "", 'Loading local proxy', "" )
             url_to_play=f4m_proxy.prepare_url(url,proxy,use_proxy_for_chunks,maxbitrate=maxbitrate,simpleDownloader=simpleDownloader,auth=auth, streamtype=streamtype, swf=swf , callbackpath=callbackpath,callbackparam=callbackparam)
             listitem = xbmcgui.ListItem(name,path=url_to_play, iconImage=iconImage, thumbnailImage=iconImage)
+            
             listitem.setInfo('video', {'Title': name})
+            try:
+                if streamtype==None or streamtype=='' or streamtype in ['HDS'  'HLS','HLSRETRY']:
+                    listitem.setMimeType("flv-application/octet-stream");
+                    listitem.setContentLookup(False)
+                elif streamtype in ('TSDOWNLOADER'):
+                    listitem.setMimeType("video/mp2t");
+                    listitem.setContentLookup(False)
+            except: print 'error while setting setMimeType, so ignoring it '
+                
 
             if setResolved:
                 return url_to_play, listitem
@@ -423,7 +442,7 @@ class f4mProxyHelper():
                 #if firstTime:
                 #    xbmc.executebuiltin('Dialog.Close(all,True)')
                 #    firstTime=False
-            stopPlaying.isSet()
+            #stopPlaying.isSet()
 
             print 'Job done'
             return played
