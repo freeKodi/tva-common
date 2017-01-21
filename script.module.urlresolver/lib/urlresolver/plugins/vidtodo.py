@@ -1,6 +1,6 @@
 """
-    urlresolver XBMC Addon
-    Copyright (C) 2011 t0mm0
+    Kodi urlresolver plugin
+    Copyright (C) 2016  script.module.urlresolver
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -15,18 +15,9 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
+from __generic_resolver__ import GenericResolver
 
-from lib import helpers
-from urlresolver.resolver import UrlResolver, ResolverError
-
-
-class VodlockerResolver(UrlResolver):
-    name = "vodlocker.com"
-    domains = ["vodlocker.com"]
-    pattern = '(?://|\.)(vodlocker\.com)/(?:embed-)?([0-9a-zA-Z]+)'
-
-    def get_media_url(self, host, media_id):
-        return helpers.get_media_url(self.get_url(host, media_id), result_blacklist=['dl'])
-
-    def get_url(self, host, media_id):
-        return 'http://vodlocker.com/embed-%s-640x400.html' % media_id
+class VidToDoResolver(GenericResolver):
+    name = 'vidtodo'
+    domains = ['vidtodo.com']
+    pattern = '(?://|\.)(vidtodo\.com)/(?:embed-)?([0-9a-zA-Z]+)'

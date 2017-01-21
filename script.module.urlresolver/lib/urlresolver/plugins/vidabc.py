@@ -1,9 +1,6 @@
 """
-    OVERALL CREDIT TO:
-        t0mm0, Eldorado, VOINAGE, BSTRDMKR, tknorris, smokdpi, TheHighway
-
-    urlresolver XBMC Addon
-    Copyright (C) 2011 t0mm0
+    vidabc urlresolver plugin
+    Copyright (C) 2016 suuhm
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -12,19 +9,20 @@
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
-from lib import helpers
-from __generic_resolver__ import GenericResolver
 
-class StreameResolver(GenericResolver):
-    name = "streame.net"
-    domains = ['streame.net']
-    pattern = '(?://|\.)(streame\.net)/(?:embed-)?([0-9a-zA-Z]+)'
+from __generic_resolver__ import GenericResolver
+from lib import helpers
+
+class VidabcResolver(GenericResolver):
+    name = "vidabc"
+    domains = ["vidabc.com"]
+    pattern = '(?://|\.)(vidabc\.com)/(?:embed-)?([0-9a-zA-Z-]+)'
 
     def get_media_url(self, host, media_id):
-        return helpers.get_media_url(self.get_url(host, media_id), result_blacklist=['dl']).replace('\/', '/')
+        return helpers.get_media_url(self.get_url(host, media_id), result_blacklist=['error.'])

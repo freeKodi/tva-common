@@ -1,6 +1,6 @@
 """
     Kodi urlresolver plugin
-    Copyright (C) 2016  tknorris
+    Copyright (C) 2016  script.module.urlresolver
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,16 +17,17 @@
 """
 
 from lib import helpers
+from urlresolver import common
 from urlresolver.resolver import UrlResolver, ResolverError
 
-
-class VodmineResolver(UrlResolver):
-    name = 'Vodmine'
-    domains = ['vodmine.com']
-    pattern = '(?://|\.)(vodmine\.com)/(?:video|embed)/([0-9a-zA-Z]+)'
+class VideogetResolver(UrlResolver):
+    name = "videoget"
+    domains = ["videoget.me"]
+    pattern = '(?://|\.)(videoget\.me)/(?:embed|watch|videos)\.php\?vid=?([0-9a-zA-Z]+)'
 
     def get_media_url(self, host, media_id):
-        return helpers.get_media_url(self.get_url(host, media_id))
+        headers = {'User-Agent': common.FF_USER_AGENT}
+        return self.get_url(host, media_id) + helpers.append_headers(headers)
 
     def get_url(self, host, media_id):
-        return 'http://vodmine.com/embed/%s' % media_id
+        return self._default_get_url(host, media_id, template='http://{host}/videos.php?vid={media_id}')

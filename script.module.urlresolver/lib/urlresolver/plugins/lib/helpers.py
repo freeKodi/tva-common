@@ -61,7 +61,7 @@ def pick_source(sources, auto_pick=None):
         if auto_pick:
             return sources[0][1]
         else:
-            result = xbmcgui.Dialog().select(common.i18n('choose_the_link'), [source[0] if source[0] else 'Uknown' for source in sources])
+            result = xbmcgui.Dialog().select(common.i18n('choose_the_link'), [str(source[0]) if source[0] else 'Uknown' for source in sources])
             if result == -1:
                 raise ResolverError(common.i18n('no_link_selected'))
             else:
@@ -164,7 +164,7 @@ def get_media_url(url, result_blacklist=None):
 
     result_blacklist = list(set(result_blacklist + ['.smil']))  # smil(not playable) contains potential sources, only blacklist when called from here
     net = common.Net()
-    headers = {'User-Agent': common.FF_USER_AGENT}
+    headers = {'User-Agent': common.RAND_UA}
 
     response = net.http_GET(url, headers=headers)
     response_headers = response.get_headers(as_dict=True)

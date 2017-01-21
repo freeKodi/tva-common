@@ -1,6 +1,5 @@
 """
-    urlresolver XBMC Addon
-    Copyright (C) 2011 t0mm0
+    Copyright (C) 2017 tknorris
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -15,29 +14,32 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-
 import re
-import urllib
+from lib import helpers
 from urlresolver import common
 from urlresolver.resolver import UrlResolver, ResolverError
 
-class AuEngineResolver(UrlResolver):
-    name = "auengine.com"
-    domains = ["auengine.com"]
-    pattern = '(?://|\.)(auengine\.com)/embed.php\?file=([0-9a-zA-Z\-_]+)[&]*'
+class TheVidResolver(UrlResolver):
+    name = "TheVid"
+    domains = ["thevid.net"]
+    pattern = '(?://|\.)(thevid\.net)/(?:video|e)/([A-Za-z0-9]+)'
 
     def __init__(self):
         self.net = common.Net()
+        self.user_agent = common.IE_USER_AGENT
+        self.headers = {'User-Agent': self.user_agent}
 
     def get_media_url(self, host, media_id):
         web_url = self.get_url(host, media_id)
-        resp = self.net.http_GET(web_url)
-        html = resp.content
-        r = re.search("video_link\s=\s'(.+?)';", html)
-        if r:
-            return urllib.unquote_plus(r.group(1))
+        self.headers['Referer'] = web_url
+        html = self.net.http_GET(web_url, headers=self.headers).content
+        html = helpers.add_packed_data(html)
+        match = re.search('vurl\d+="([^"]+)', html)
+        if match:
+            self.headers.update({'Referer': web_url})
+            return match.group(1) + helpers.append_headers(self.headers)
         else:
-            raise ResolverError('no file located')
+            raise ResolverError('File not found')
 
     def get_url(self, host, media_id):
-        return 'http://www.auengine.com/embed.php?file=%s' % (media_id)
+        return self._default_get_url(host, media_id, template='http://{host}/e/{media_id}/')

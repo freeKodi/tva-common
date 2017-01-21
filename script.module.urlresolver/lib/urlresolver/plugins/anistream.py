@@ -1,6 +1,6 @@
 """
-grifthost urlresolver plugin
-Copyright (C) 2015 tknorris
+ani-stream urlresolver plugin
+Copyright (C) 2016 quartoxuna
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -15,18 +15,9 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
+from __generic_resolver__ import GenericResolver
 
-from lib import helpers
-from urlresolver.resolver import UrlResolver, ResolverError
-
-
-class IDoWatchResolver(UrlResolver):
-    name = 'idowatch'
-    domains = ['idowatch.net']
-    pattern = '(?://|\.)(idowatch\.net)/(?:embed-)?([0-9a-zA-Z]+)'
-
-    def get_media_url(self, host, media_id):
-        return helpers.get_media_url(self.get_url(host, media_id))
-
-    def get_url(self, host, media_id):
-        return 'http://idowatch.net/%s.html' % (media_id)
+class AniStreamResolver(GenericResolver):
+    name = "ani-stream"
+    domains = ["ani-stream.com"]
+    pattern = '(?://|\.)(ani-stream\.com)/(?:embed-)?([0-9a-zA-Z-]+)'
