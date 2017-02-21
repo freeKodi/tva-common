@@ -1,4 +1,9 @@
-"""    This program is free software: you can redistribute it and/or modify
+# -*- coding: utf-8 -*-
+"""
+     
+    Copyright (C) 2016
+    
+    This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
@@ -10,13 +15,13 @@
     
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
-    
-    Special thanks for help with this resolver go out to t0mm0, jas0npc,
-    mash2k3, Mikey1234,voinage and of course Eldorado. Cheers guys :)
 """
 from __generic_resolver__ import GenericResolver
 
-class VidtoResolver(GenericResolver):
-    name = "vidto"
-    domains = ["vidto.me"]
-    pattern = '(?://|\.)(vidto\.me)/(?:embed-)?([0-9a-zA-Z]+)'
+class SprutoResolver(GenericResolver):
+    name = 'spruto'
+    domains = ['spruto.tv']
+    pattern = '(?://|\.)(spruto\.tv)/(?:videos/|iframe_embed\.php.+?video_id=)([0-9a-zA-Z]+)'
+
+    def get_url(self, host, media_id):
+        return self._default_get_url(host, media_id, 'http://{host}/iframe_embed.php?video_id={media_id}')

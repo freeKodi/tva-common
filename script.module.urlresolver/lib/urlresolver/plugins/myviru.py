@@ -1,7 +1,6 @@
-# -*- coding: UTF-8 -*-
 """
     Kodi urlresolver plugin
-    Copyright (C) 2016  alifrezser
+    Copyright (C) 2016  script.module.urlresolver
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,14 +16,15 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-import re
+import re, json
+from lib import helpers
 from urlresolver import common
 from urlresolver.resolver import UrlResolver, ResolverError
 
-class Toltsd_felResolver(UrlResolver):
-    name = "toltsd-fel"
-    domains = ["toltsd-fel.tk", "toltsd-fel.xyz"]
-    pattern = '(?://|\.)(toltsd-fel\.(?:tk|xyz))/(?:embed|video)/([0-9]+)'
+class MyviRuResolver(UrlResolver):
+    name = "myviru"
+    domains = ["myvi.ru"]
+    pattern = '(?://|\.)(myvi\.ru)/(?:\w+/)?(?:embed|watch)/?(?:\w+/)?([0-9a-zA-Z_-]+)'
 
     def __init__(self):
         self.net = common.Net()
@@ -33,12 +33,17 @@ class Toltsd_felResolver(UrlResolver):
         web_url = self.get_url(host, media_id)
 
         html = self.net.http_GET(web_url).content
+        if isinstance(html, unicode): html = html.encode('utf-8', 'ignore')
 
-        direct_url = re.search('m4v\s*:\s*["\']([^"\']+)', html)
-        if direct_url:
-            return direct_url.group(1)
-        
-        raise ResolverError('File not found')
+        match = re.search('''['"]video['"]\s*:\s*(\[[^\]]+\])''', html, re.I | re.M | re.DOTALL)
+        if not match:
+            raise ResolverError('File Not Found or removed')
+
+        sources = [i.get('url') for i in json.loads(match.group(1)) if i.get('url')][0]
+
+        uuid = self.net.get_cookies().get('.'+host).get('/').get('UniversalUserID').value
+
+        return sources + helpers.append_headers({'Cookie': 'UniversalUserID=%s' % uuid, 'User-Agent': common.RAND_UA})
 
     def get_url(self, host, media_id):
-        return self._default_get_url(host, media_id, 'http://{host}/embed/{media_id}')
+        return self._default_get_url(host, media_id, 'http://{host}/player/api/Video/Get/{media_id}?sig')

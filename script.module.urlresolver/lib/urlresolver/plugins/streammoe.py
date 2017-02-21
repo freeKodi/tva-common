@@ -1,7 +1,6 @@
-# -*- coding: UTF-8 -*-
 """
     Kodi urlresolver plugin
-    Copyright (C) 2016  alifrezser
+    Copyright (C) 2016  script.module.urlresolver
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,28 +16,29 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-import re
+import re, base64
+from lib import helpers
 from urlresolver import common
 from urlresolver.resolver import UrlResolver, ResolverError
 
-class Toltsd_felResolver(UrlResolver):
-    name = "toltsd-fel"
-    domains = ["toltsd-fel.tk", "toltsd-fel.xyz"]
-    pattern = '(?://|\.)(toltsd-fel\.(?:tk|xyz))/(?:embed|video)/([0-9]+)'
+class StreamMoeResolver(UrlResolver):
+    name = "streammoe"
+    domains = ["stream.moe"]
+    pattern = '(?://|\.)(stream\.moe)/(?:embed\d*/)?([0-9a-zA-Z]+)'
 
     def __init__(self):
         self.net = common.Net()
 
     def get_media_url(self, host, media_id):
         web_url = self.get_url(host, media_id)
-
         html = self.net.http_GET(web_url).content
 
-        direct_url = re.search('m4v\s*:\s*["\']([^"\']+)', html)
-        if direct_url:
-            return direct_url.group(1)
-        
-        raise ResolverError('File not found')
+        try: html = base64.b64decode(re.search('atob\(\'(.+?)\'', html).group(1))
+        except: pass
+
+        source_list = helpers.scrape_sources(html)
+        source = helpers.pick_source(source_list)
+        return source
 
     def get_url(self, host, media_id):
-        return self._default_get_url(host, media_id, 'http://{host}/embed/{media_id}')
+        return self._default_get_url(host, media_id, template='http://{host}/{media_id}')

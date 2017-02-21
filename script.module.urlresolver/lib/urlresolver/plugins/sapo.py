@@ -1,7 +1,4 @@
 """
-    OVERALL CREDIT TO:
-        t0mm0, Eldorado, VOINAGE, BSTRDMKR, tknorris, smokdpi, TheHighway
-
     urlresolver XBMC Addon
     Copyright (C) 2011 t0mm0
 
@@ -20,33 +17,33 @@
 """
 
 import re
-from lib import helpers
 from urlresolver import common
 from urlresolver.resolver import UrlResolver, ResolverError
 
-
-class VideoRevResolver(UrlResolver):
-    name = "videorev"
-    domains = ['videorev.cc']
-    pattern = '(?://|\.)(videorev\.cc)/([a-zA-Z0-9]+)\.html'
+class SapoResolver(UrlResolver):
+    name = "sapo"
+    domains = ["videos.sapo.pt"]
+    pattern = '(?://|\.)(videos\.sapo\.pt)/([0-9a-zA-Z]+)'
 
     def __init__(self):
         self.net = common.Net()
 
     def get_media_url(self, host, media_id):
         web_url = self.get_url(host, media_id)
-        headers = {'User-Agent': common.FF_USER_AGENT}
-        response = self.net.http_GET(web_url, headers=headers)
-        html = response.content
+
+        html = self.net.http_GET(web_url).content
 
         if html:
-            smil_id = re.search('([a-zA-Z0-9]+)(?=\|smil)', html).groups()[0]
-            smil_url = 'http://%s/%s.smil' % (host, smil_id)
-            smil = self.net.http_GET(smil_url, headers=headers).content
-            sources = helpers.parse_smil_source_list(smil)
-            return helpers.pick_source(sources) + helpers.append_headers(headers)
+            try:
+                video_link = re.search(r'data-video-link=[\"\'](.+?)[\"\']', html).groups()[0]
+                if video_link.startswith('//'): video_link = 'http:%s' % video_link
+                return video_link
+            except:
+                raise ResolverError('No playable video found.')
 
-        raise ResolverError('No playable video found.')
+        else:
+            raise ResolverError('No playable video found.')
 
     def get_url(self, host, media_id):
-        return self._default_get_url(host, media_id, 'http://{host}/{media_id}.html')
+        return 'http://%s/%s' % (host, media_id)
+        

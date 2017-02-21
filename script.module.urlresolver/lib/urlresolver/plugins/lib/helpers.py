@@ -61,7 +61,7 @@ def pick_source(sources, auto_pick=None):
         if auto_pick:
             return sources[0][1]
         else:
-            result = xbmcgui.Dialog().select(common.i18n('choose_the_link'), [str(source[0]) if source[0] else 'Uknown' for source in sources])
+            result = xbmcgui.Dialog().select(common.i18n('choose_the_link'), [str(source[0]) if source[0] else 'Unknown' for source in sources])
             if result == -1:
                 raise ResolverError(common.i18n('no_link_selected'))
             else:
@@ -138,12 +138,14 @@ def scrape_sources(html, result_blacklist=None, scheme='http'):
     html = add_packed_data(html)
 
     source_list = []
+    source_list += __parse_to_list(html, '''["']?label\s*["']?\s*[:=]\s*["'](?P<label>[^"']+)["'](?:,|[^}\]])["']?\s*file\s*["']?\s*[:=,]?\s*["'](?P<url>[^"']+)''')
     source_list += __parse_to_list(html, '''["']?\s*file\s*["']?\s*[:=,]?\s*["'](?P<url>[^"']+)(?:[^}>\],]?["',]?\s*label\s*["']?\s*[:=]?\s*["'](?P<label>[^"']+))?''')
     source_list += __parse_to_list(html, '''video[^><]+src\s*=\s*['"](?P<url>[^'"]+)''')
     source_list += __parse_to_list(html, '''source\s+src\s*=\s*['"](?P<url>[^'"]+)['"](?:.*?data-res\s*=\s*['"](?P<label>[^'"]+))?''')
     source_list += __parse_to_list(html, '''["']?\s*url\s*["']?\s*[:=]\s*["'](?P<url>[^"']+)''')
     source_list += __parse_to_list(html, '''param\s+name\s*=\s*"src"\s*value\s*=\s*"(?P<url>[^"]+)''')
 
+    common.log_utils.log(source_list)
     if len(source_list) > 1:
         try: source_list.sort(key=lambda x: int(x[0]), reverse=True)
         except:
