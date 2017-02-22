@@ -15,7 +15,7 @@
 
 <addon id="script.module.liveresolver"
      name="LiveResolver"
-     version="0.1.48"
+     version="0.1.49"
      provider-name="natko1412">
   <requires>
     <import addon="xbmc.python" version="2.1.0" />
