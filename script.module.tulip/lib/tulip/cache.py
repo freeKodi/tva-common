@@ -118,15 +118,21 @@ def timeout(function, *args, **table):
         return
 
 
-def clear(table=None):
+def clear(table=None, withyes=True):
     try:
         control.idle()
 
-        if table == None: table = ['rel_list', 'rel_lib']
-        elif not type(table) == list: table = [table]
+        if table == None:
+            table = ['rel_list', 'rel_lib']
+        elif not type(table) == list:
+            table = [table]
 
-        yes = control.yesnoDialog(control.lang(30401).encode('utf-8'), '', '')
-        if not yes: return
+        if withyes:
+            yes = control.yesnoDialog(control.lang(30401).encode('utf-8'), '', '')
+            if not yes:
+                return
+        else:
+            pass
 
         dbcon = database.connect(control.cacheFile)
         dbcur = dbcon.cursor()

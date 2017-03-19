@@ -1,3 +1,8 @@
+[B]1.0.8[/B]
+- New optional mobile user agent
+- Minor fix in input dialog
+- Added parameter in clear cache to override yesno dialog
+
 [B]1.0.7[/B]
 - Removed lite modules
 - Added theme parameter for addonmedia function

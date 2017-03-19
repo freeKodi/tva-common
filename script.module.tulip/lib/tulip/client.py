@@ -80,7 +80,8 @@ def request(url, close=True, redirect=True, error=False, proxy=None, post=None, 
         if redirect == False:
 
             class NoRedirection(urllib2.HTTPErrorProcessor):
-                def http_response(self, request, response): return response
+                def http_response(self, request, response):
+                    return response
 
             opener = urllib2.build_opener(NoRedirection)
             opener = urllib2.install_opener(opener)
@@ -117,12 +118,15 @@ def request(url, close=True, redirect=True, error=False, proxy=None, post=None, 
             elif error == False:
                 return
 
-
         if output == 'cookie':
-            try: result = '; '.join(['%s=%s' % (i.name, i.value) for i in cookies])
-            except: pass
-            try: result = cf
-            except: pass
+            try:
+                result = '; '.join(['%s=%s' % (i.name, i.value) for i in cookies])
+            except:
+                pass
+            try:
+                result = cf
+            except:
+                pass
 
         elif output == 'response':
             if limit == '0':
@@ -183,15 +187,15 @@ def parseDOM(html, name=u"", attrs={}, ret=False):
 
     print("Name: " + repr(name) + " - Attrs:" + repr(attrs) + " - Ret: " + repr(ret) + " - HTML: " + str(type(html)), 3)
 
-    if isinstance(name, str): # Should be handled
+    if isinstance(name, str):  # Should be handled
         try:
-            name = name #.decode("utf-8")
+            name = name  # .decode("utf-8")
         except:
             print("Couldn't decode name binary string: " + repr(name))
 
     if isinstance(html, str):
         try:
-            html = [html.decode("utf-8")] # Replace with chardet thingy
+            html = [html.decode("utf-8")]  # Replace with chardet thingy
         except:
             print("Couldn't decode html binary string. Data length: " + repr(len(html)))
             html = [html]
@@ -364,6 +368,10 @@ def randomagent():
 
 def agent():
     return 'Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko'
+
+
+def mobile_agent():
+    return 'Mozilla/5.0 (Android 4.4; Mobile; rv:18.0) Gecko/18.0 Firefox/18.0'
 
 
 def agent_appender(agent=randomagent()):

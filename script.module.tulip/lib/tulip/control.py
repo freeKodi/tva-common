@@ -60,6 +60,7 @@ image = xbmcgui.ControlImage
 alphanum_input = xbmcgui.INPUT_ALPHANUM
 password_input = xbmcgui.INPUT_PASSWORD
 hide_input = xbmcgui.ALPHANUM_HIDE_INPUT
+verify = xbmcgui.PASSWORD_VERIFY
 item = xbmcgui.ListItem
 
 openFile = xbmcvfs.File
@@ -89,8 +90,8 @@ def okDialog(heading, line1):
     return dialog.ok(heading, line1)
 
 
-def inputDialog(heading, _type_=''):
-    return dialog.input(heading, _type_)
+def inputDialog(heading):
+    return dialog.input(heading)
 
 
 def yesnoDialog(line1, line2, line3, heading=addonInfo('name'), nolabel='', yeslabel=''):

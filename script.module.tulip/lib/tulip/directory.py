@@ -26,7 +26,7 @@ from __init__ import sysaddon, syshandle
 
 def add(items, cacheToDisc=True, content=None, mediatype=None, infotype='video'):
 
-    if items == None or len(items) == 0:
+    if items is None or len(items) == 0:
         return
 
     sysicon = control.join(control.addonInfo('path'), 'resources', 'media')
@@ -35,8 +35,10 @@ def add(items, cacheToDisc=True, content=None, mediatype=None, infotype='video')
 
     for i in items:
         try:
-            try: label = control.lang(i['title']).encode('utf-8')
-            except: label = i['title']
+            try:
+                label = control.lang(i['title']).encode('utf-8')
+            except:
+                label = i['title']
 
             if 'label' in i and not i['label'] == '0':
                 label = i['label']
@@ -54,7 +56,8 @@ def add(items, cacheToDisc=True, content=None, mediatype=None, infotype='video')
                 banner = i['banner']
             elif 'fanart' in i and not i['fanart'] == '0':
                 banner = i['fanart']
-            else: banner = image
+            else:
+                banner = image
 
             fanart = i['fanart'] if 'fanart' in i and not i['fanart'] == '0' else sysfanart
 
@@ -112,8 +115,10 @@ def add(items, cacheToDisc=True, content=None, mediatype=None, infotype='video')
         url = '%s?action=%s&url=%s' % (sysaddon, i['nextaction'], urllib.quote_plus(i['next']))
         icon = i['nexticon'] if 'nexticon' in i else control.join(sysicon, 'next.png')
         fanart = i['nextfanart'] if 'nextfanart' in i else sysfanart
-        try: label = control.lang(i['nextlabel']).encode('utf-8')
-        except: label = 'next'
+        try:
+            label = control.lang(i['nextlabel']).encode('utf-8')
+        except:
+            label = 'next'
 
         item = control.item(label=label, iconImage=icon, thumbnailImage=icon)
         item.setArt({'icon': icon, 'thumb': icon, 'poster': icon, 'tvshow.poster': icon, 'season.poster': icon, 'banner': icon, 'tvshow.banner': icon, 'season.banner': icon})
