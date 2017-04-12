@@ -1,6 +1,9 @@
 """
+    OVERALL CREDIT TO:
+        t0mm0, Eldorado, VOINAGE, BSTRDMKR, tknorris, smokdpi, TheHighway
+
     urlresolver XBMC Addon
-    Copyright (C) 2016 Gujal
+    Copyright (C) 2011 t0mm0
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,10 +20,7 @@
 """
 from __generic_resolver__ import GenericResolver
 
-class PlayHDResolver(GenericResolver):
-    name = "playhd.video"
-    domains = ["playhd.video", "playhd.fo"]
-    pattern = '(?://|\.)(playhd\.(?:video|fo))/(?:embed\.php?.*?vid=|video/)([0-9]+)'
-
-    def get_url(self, host, media_id):
-        return 'http://www.playhd.video/embed.php?vid=%s' % (media_id)
+class VidwatchResolver(GenericResolver):
+    name = "vidwatch.me"
+    domains = ['vidwatch3.me']
+    pattern = '(?://|\.)(vidwatch3\.me)/(?:embed-)?([a-zA-Z0-9]+)'
