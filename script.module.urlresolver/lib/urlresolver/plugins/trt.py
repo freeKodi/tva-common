@@ -1,6 +1,6 @@
 '''
-SpeedVideo.net urlresolver plugin
-Copyright (C) 2014 TheHighway and tknorris
+vidzi urlresolver plugin
+Copyright (C) 2014 Eldorado
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -15,36 +15,32 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 '''
-
-import re
-import base64
 from lib import helpers
 from urlresolver import common
-from urlresolver.resolver import UrlResolver
+from urlresolver.resolver import UrlResolver, ResolverError
+import re
 
-class SpeedVideoResolver(UrlResolver):
-    name = "speedvideo"
-    domains = ["speedvideo.net"]
-    domain = "speedvideo.net"
-    pattern = '(?://|\.)(speedvideo\.net)/(?:embed-)?([0-9a-zA-Z]+)'
+class trtResolver(UrlResolver):
+    name = "trt"
+    domains = ["trt.pl"]
+    pattern = '(?://|\.)(trt\.pl)/(?:film)/([0-9a-zA-Z]+)'
 
     def __init__(self):
         self.net = common.Net()
 
     def get_media_url(self, host, media_id):
         web_url = self.get_url(host, media_id)
-        headers = {'User-Agent': common.RAND_UA}
+        headers = {'Referer': web_url, 'User-Agent': common.FF_USER_AGENT}
 
         html = self.net.http_GET(web_url, headers=headers).content
-
-        a = re.compile('var\s+linkfile *= *"(.+?)"').findall(html)[0]
-        b = re.compile('var\s+linkfile *= *base64_decode\(.+?\s+(.+?)\)').findall(html)[0]
-        c = re.compile('var\s+%s *= *(\d*)' % b).findall(html)[0]
-
-        stream_url = a[:int(c)] + a[(int(c) + 10):]
-        stream_url = base64.b64decode(stream_url)
-
-        return stream_url + helpers.append_headers(headers)
+        pages = re.findall('href="([^"]+)[^>]+class="mainPlayerQualityHref"[^>]+>(.*?)</a>', html)
+        if pages:
+            try: pages.sort(key=lambda x: int(x[1][:-1]), reverse=True)
+            except: pass
+            html = self.net.http_GET('https://www.trt.pl' + pages[0][0], headers=headers).content
+        
+        sources = helpers.scrape_sources(html, scheme='https')
+        return helpers.pick_source(sources) + helpers.append_headers(headers)
 
     def get_url(self, host, media_id):
-        return 'http://speedvideo.net/embed-%s.html' % media_id
+        return 'https://www.trt.pl/film/%s' % media_id
