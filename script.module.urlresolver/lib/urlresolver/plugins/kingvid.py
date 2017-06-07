@@ -1,23 +1,23 @@
-'''
-    urlresolver Kodi Addon
-    Copyright (C) 2016 Gujal
-
+"""
+    Kodi urlresolver plugin
+    Copyright (C) 2017 alifrezser
+    
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-
+    
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
-
+    
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-'''
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+"""
 from __generic_resolver__ import GenericResolver
 
-class LetwatchResolver(GenericResolver):
-    name = "letwatch"
-    domains = ['letwatch.us', 'letwatch.to', 'vidshare.us']
-    pattern = '(?://|\.)(letwatch\.(?:us|to)|vidshare\.us)/(?:embed-)?([0-9a-zA-Z]+)'
+class KingvidResolver(GenericResolver):
+    name = "kingvid"
+    domains = ["kingvid.tv"]
+    pattern = '(?://|\.)(kingvid\.tv)/(?:embed-)?([0-9a-zA-Z]+)'

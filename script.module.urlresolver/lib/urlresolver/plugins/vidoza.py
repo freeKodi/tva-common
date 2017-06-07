@@ -1,6 +1,6 @@
 """
-    urlresolver XBMC Addon
-    Copyright (C) 2016 lambda
+    Kodi urlresolver plugin
+    Copyright (C) 2016  script.module.urlresolver
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -15,21 +15,9 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-import re
-from lib import helpers
-from urlresolver import common
-from urlresolver.resolver import UrlResolver, ResolverError
+from __generic_resolver__ import GenericResolver
 
-class UstreamResolver(UrlResolver):
-    name = 'ustream.tv'
-    domains = ['ustream.tv']
-    pattern = '(?://|\.)(ustream\.tv)/embed/([^/?="]+)'
-    
-    def __init__(self):
-        self.net = common.Net()
-        
-    def get_media_url(self, host, media_id):
-        return self.get_url(host, media_id)
-
-    def get_url(self, host, media_id):
-        return 'http://iphone-streaming.ustream.tv/uhls/%s/streams/live/iphone/playlist.m3u8' % media_id
+class VidozaResolver(GenericResolver):
+    name = 'vidoza'
+    domains = ['vidoza.net']
+    pattern = '(?://|\.)(vidoza\.net)/(?:embed-)?([0-9a-zA-Z]+)'
