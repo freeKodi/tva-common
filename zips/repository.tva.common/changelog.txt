@@ -1,3 +1,6 @@
+[B]Version 1.0.2[/B]
+- Move repo to github
+
 [B]Version 1.0.1[/B]
 - Add icon
 
