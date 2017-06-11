@@ -1,5 +1,4 @@
-/.project
-/.pydevproject
+.project
 *.pyo
 *.pyc
 /plugin.video.f4mTester/
