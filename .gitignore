@@ -2,3 +2,9 @@
 /.pydevproject
 *.pyo
 *.pyc
+/plugin.video.f4mTester/
+/repository.tva.common/
+/script.module.liveresolver/
+/script.module.tulip/
+/script.module.urlresolver/
+/script.video.F4mProxy/
